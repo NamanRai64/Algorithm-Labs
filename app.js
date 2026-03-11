@@ -177,6 +177,9 @@ const AlgorithmLab = (() => {
         
         dom.topDescription = $('topDescription');
         dom.algoGrid = $('algoGrid');
+        dom.toggleDescription = $('toggleDescription');
+        dom.descriptionBody = $('descriptionBody');
+        dom.toggleImplementation = $('toggleImplementation');
     }
 
     // ── Registration ──
@@ -693,9 +696,9 @@ const AlgorithmLab = (() => {
                 // Reveal pseudocode as requested
                 if (dom.pseudocodeBody && dom.pseudocodeBody.classList.contains('collapsed')) {
                     dom.pseudocodeBody.classList.remove('collapsed');
-                    dom.togglePseudocode.classList.remove('collapsed');
+                    if(dom.toggleImplementation) dom.toggleImplementation.classList.remove('collapsed');
                 }
-                // Scroll to top of visualization
+                // Scroll to top of details if needed
                 dom.algoTitle.scrollIntoView({ behavior: 'smooth' });
             });
         });
@@ -729,11 +732,19 @@ const AlgorithmLab = (() => {
             generateAndRun();
         });
 
-        // Collapsible panels
-        dom.togglePseudocode.addEventListener('click', () => {
-            dom.pseudocodeBody.classList.toggle('collapsed');
-            dom.togglePseudocode.classList.toggle('collapsed');
-        });
+        // Collapsible details accordion
+        if(dom.toggleDescription) {
+            dom.toggleDescription.addEventListener('click', () => {
+                dom.descriptionBody.classList.toggle('collapsed');
+                dom.toggleDescription.classList.toggle('collapsed');
+            });
+        }
+        if(dom.toggleImplementation) {
+            dom.toggleImplementation.addEventListener('click', () => {
+                dom.pseudocodeBody.classList.toggle('collapsed');
+                dom.toggleImplementation.classList.toggle('collapsed');
+            });
+        }
         dom.toggleLog.addEventListener('click', () => {
             dom.logBody.classList.toggle('collapsed');
             dom.toggleLog.classList.toggle('collapsed');

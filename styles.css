@@ -968,36 +968,70 @@ kbd {
     margin-right: 2px;
 }
 
-/* ===== PSEUDOCODE PANEL ===== */
-.pseudocode-panel .panel-header {
-    cursor: pointer;
+/* ===== DETAILS ACCORDION ===== */
+.details-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 24px;
 }
 
-.toggle-btn {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    padding: 4px;
+.accordion-item {
+    border-top: 1px solid var(--border);
+}
+
+.accordion-item:first-child {
+    border-top: none;
+}
+
+.accordion-header {
+    padding: 14px 20px;
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    transition: transform var(--transition-fast);
+    cursor: pointer;
+    background: var(--bg-secondary);
+    transition: background var(--transition-fast);
 }
 
-.toggle-btn.collapsed {
+.accordion-header:hover {
+    background: var(--bg-card-hover);
+}
+
+.accordion-header span {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.accordion-header .chevron {
+    color: var(--text-muted);
+    transition: transform var(--transition-normal);
+}
+
+.accordion-header.collapsed .chevron {
     transform: rotate(-90deg);
 }
 
-.pseudocode-body {
-    max-height: 300px;
+.accordion-body {
+    max-height: 800px;
     overflow-y: auto;
-    transition: max-height var(--transition-normal), padding var(--transition-normal);
+    transition: max-height var(--transition-normal), opacity var(--transition-normal);
+    opacity: 1;
 }
 
-.pseudocode-body.collapsed {
+.accordion-body.collapsed {
     max-height: 0;
     overflow: hidden;
-    padding: 0;
+    opacity: 0;
+}
+
+.panel-body {
+    padding: 16px 20px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
 }
 
 .pseudocode {

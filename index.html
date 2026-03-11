@@ -199,28 +199,7 @@
                 </div>
             </section>
 
-            <!-- Description Panel -->
-            <section class="panel description-panel" id="descriptionPanel">
-                <div class="panel-header">
-                    <h2 class="panel-title">Algorithm Overview</h2>
-                </div>
-                <div class="panel-body" id="algoDescription">
-                    <!-- Filled dynamically -->
-                </div>
-            </section>
 
-            <!-- Pseudocode Panel -->
-            <section class="panel pseudocode-panel" id="pseudocodePanel">
-                <div class="panel-header">
-                    <h2 class="panel-title">📝 Pseudocode</h2>
-                    <button class="toggle-btn" id="togglePseudocode" title="Toggle pseudocode">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-                    </button>
-                </div>
-                <div class="pseudocode-body" id="pseudocodeBody">
-                    <pre class="pseudocode" id="pseudocodeContent"></pre>
-                </div>
-            </section>
 
             <!-- Visualization Area -->
             <section class="panel viz-panel" id="vizPanel">
@@ -266,6 +245,35 @@
                 <div class="step-explanation" id="stepExplanation">
                     <span class="explanation-label">Current Step:</span>
                     <span class="explanation-text" id="explanationText">Click Play to begin the visualization.</span>
+                </div>
+            <!-- Unified Details Section (Description & Pseudocode) -->
+            <section class="panel details-panel" id="detailsPanel">
+                <div class="panel-header">
+                    <h2 class="panel-title">📚 Algorithm Reference</h2>
+                </div>
+                
+                <div class="details-accordion">
+                    <!-- Overview subsection -->
+                    <div class="accordion-item">
+                        <div class="accordion-header" id="toggleDescription">
+                            <span>📖 Overview</span>
+                            <svg class="chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                        </div>
+                        <div class="accordion-body" id="descriptionBody">
+                            <div class="panel-body" id="algoDescription"></div>
+                        </div>
+                    </div>
+
+                    <!-- Pseudocode subsection -->
+                    <div class="accordion-item">
+                        <div class="accordion-header" id="toggleImplementation">
+                            <span>📝 Pseudocode</span>
+                            <svg class="chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                        </div>
+                        <div class="accordion-body collapsed" id="pseudocodeBody">
+                            <pre class="pseudocode" id="pseudocodeContent"></pre>
+                        </div>
+                    </div>
                 </div>
             </section>
 
