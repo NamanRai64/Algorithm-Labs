@@ -139,6 +139,7 @@ const AlgorithmLab = (() => {
         dom.pseudocodePanel = $('pseudocodePanel');
         dom.vizPanel = $('vizPanel');
         dom.complexityPanel = Math.random() ? document.querySelector('.panel:nth-of-type(5)') : document.querySelector('.panel'); // The complexity panel doesn't have an ID but we can toggle them all. Actually, let's cache them by IDs if we had them, OR just toggle `.panel` vs `.home-panel`. Wait, there's no ID on the complexity panel. We can just use queries.
+        dom.controlsBar = $('controlsBar');
         
         // New feature DOM refs
         dom.progressBar = $('progressBar');
@@ -173,6 +174,9 @@ const AlgorithmLab = (() => {
         dom.toggleLog = $('toggleLog');
         dom.logBody = $('logBody');
         dom.logList = $('logList');
+        
+        dom.topDescription = $('topDescription');
+        dom.algoGrid = $('algoGrid');
     }
 
     // ── Registration ──
@@ -205,6 +209,7 @@ const AlgorithmLab = (() => {
                 if(p) p.style.display = 'none';
             }
             if(dom.executionPanel) dom.executionPanel.style.display = 'none';
+            if(dom.controlsBar) dom.controlsBar.style.display = 'none';
             
             dom.sidebar.classList.remove('open');
             return;
@@ -218,6 +223,7 @@ const AlgorithmLab = (() => {
         // Show all panels again
         dom.homePanel.style.display = 'none';
         document.querySelectorAll('.panel').forEach(p => p.style.display = 'block');
+        if(dom.controlsBar) dom.controlsBar.style.display = 'flex';
         // Comparison panel is a panel so it's shown.
         dom.algoBadge.style.display = 'inline-block';
         $('topbar').querySelector('.topbar-shortcuts').style.display = 'block';
@@ -235,6 +241,7 @@ const AlgorithmLab = (() => {
 
         // Description
         dom.algoDescription.innerHTML = algo.description;
+        if(dom.topDescription) dom.topDescription.textContent = algo.description.replace(/<[^>]*>/g, '').substring(0, 150) + '...';
 
         // Complexity info
         const c = algo.complexity;
@@ -671,10 +678,29 @@ const AlgorithmLab = (() => {
 
         // Home algo cards
         document.querySelectorAll('.algo-card').forEach(card => {
-            card.addEventListener('click', () => {
+            card.addEventListener('click', (e) => {
+                // Ignore if clicking the info-btn inside the card
+                if(e.target.classList.contains('info-btn')) return;
                 switchTo(card.dataset.algo);
             });
         });
+
+        // Info buttons
+        document.querySelectorAll('.info-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                switchTo(btn.dataset.algo);
+                // Reveal pseudocode as requested
+                if (dom.pseudocodeBody && dom.pseudocodeBody.classList.contains('collapsed')) {
+                    dom.pseudocodeBody.classList.remove('collapsed');
+                    dom.togglePseudocode.classList.remove('collapsed');
+                }
+                // Scroll to top of visualization
+                dom.algoTitle.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+
 
         // Controls
         dom.btnPlay.addEventListener('click', togglePlay);

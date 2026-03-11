@@ -132,58 +132,67 @@
                     <h2 class="home-title">Divide & Conquer Visualizer</h2>
                     <p class="home-subtitle">Interactive algorithm lab for step-by-step learning and complexity analysis.</p>
                 </div>
-                
-                <h3 class="category-heading">Sorting</h3>
-                <div class="algo-grid">
+                <div class="algo-grid" id="algoGrid">
+                    <!-- Sorting -->
                     <div class="algo-card" data-algo="mergeSort">
                         <div class="icon-wrap sorting">⇅</div>
+                        <div class="card-category">Sorting</div>
+                        <button class="info-btn" data-algo="mergeSort" title="View Details">ℹ</button>
                         <h4>Merge Sort</h4>
                         <p>Recursive array splitting and ordered merging.</p>
                     </div>
                     <div class="algo-card" data-algo="quickSort">
                         <div class="icon-wrap sorting">⚡</div>
+                        <div class="card-category">Sorting</div>
+                        <button class="info-btn" data-algo="quickSort" title="View Details">ℹ</button>
                         <h4>Quick Sort</h4>
                         <p>Pivot-based partitioning and sorting.</p>
                     </div>
-                </div>
-
-                <h3 class="category-heading">Matrix</h3>
-                <div class="algo-grid">
+                    
+                    <!-- Matrix -->
                     <div class="algo-card" data-algo="matrixMultiply">
                         <div class="icon-wrap matrix">▦</div>
+                        <div class="card-category">Matrix</div>
+                        <button class="info-btn" data-algo="matrixMultiply" title="View Details">ℹ</button>
                         <h4>Matrix Multiply</h4>
                         <p>O(n³) block multiplication using 8 recursive calls.</p>
                     </div>
                     <div class="algo-card" data-algo="strassen">
                         <div class="icon-wrap matrix">✦</div>
+                        <div class="card-category">Matrix</div>
+                        <button class="info-btn" data-algo="strassen" title="View Details">ℹ</button>
                         <h4>Strassen's Multiply</h4>
                         <p>O(n^2.81) optimized multiplication using 7 products.</p>
                     </div>
-                </div>
 
-                <h3 class="category-heading">Search & Optimization</h3>
-                <div class="algo-grid">
+                    <!-- Search & Optimization -->
                     <div class="algo-card" data-algo="minMax">
                         <div class="icon-wrap search">↕</div>
+                        <div class="card-category">Search</div>
+                        <button class="info-btn" data-algo="minMax" title="View Details">ℹ</button>
                         <h4>Min & Max Finding</h4>
                         <p>Find minimum and maximum in 3n/2 comparisons.</p>
                     </div>
                     <div class="algo-card" data-algo="largestSubarray">
                         <div class="icon-wrap search">∑</div>
+                        <div class="card-category">Search</div>
+                        <button class="info-btn" data-algo="largestSubarray" title="View Details">ℹ</button>
                         <h4>Largest Subarray Sum</h4>
                         <p>Find contiguous subarray with max sum via mid crossing.</p>
                     </div>
-                </div>
 
-                <h3 class="category-heading">Geometry</h3>
-                <div class="algo-grid">
+                    <!-- Geometry -->
                     <div class="algo-card" data-algo="closestPair">
                         <div class="icon-wrap geometry">⊹</div>
+                        <div class="card-category">Geometry</div>
+                        <button class="info-btn" data-algo="closestPair" title="View Details">ℹ</button>
                         <h4>Closest Pair</h4>
                         <p>Find the two closest points in a 2D plane.</p>
                     </div>
                     <div class="algo-card" data-algo="convexHull">
                         <div class="icon-wrap geometry">⬡</div>
+                        <div class="card-category">Geometry</div>
+                        <button class="info-btn" data-algo="convexHull" title="View Details">ℹ</button>
                         <h4>Convex Hull</h4>
                         <p>Find the outer point perimeter enclosing the set.</p>
                     </div>
@@ -224,6 +233,10 @@
                 </div>
                 <div class="progress-bar-container">
                     <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                </div>
+                <!-- Above visualization description -->
+                <div class="viz-info-overlay" id="vizInfoOverlay">
+                    <p id="topDescription">Select an algorithm to see its description here.</p>
                 </div>
                 <div class="viz-container" id="vizContainer">
                     <!-- Algorithm visualization rendered here -->
