@@ -28,6 +28,25 @@ AlgorithmLab.register({
         conquer: 'Recursively find the closest pair in left and right halves.',
         combine: 'Check the strip of width 2δ around dividing line. Each point compared to ≤7 others. Cost: O(n log n).'
     },
+    pseudocode: [
+        'function CLOSEST-PAIR(P)',
+        '  Sort P by x-coordinate',
+        '  return CLOSEST-REC(P)',
+        '',
+        'function CLOSEST-REC(P)',
+        '  if |P| ≤ 3 then return brute-force',
+        '  mid = ⌊|P| / 2⌋',
+        '  midPoint = P[mid]',
+        '  dL = CLOSEST-REC(P[0..mid])',
+        '  dR = CLOSEST-REC(P[mid+1..|P|])',
+        '  δ = min(dL, dR)',
+        '  Build strip S = {p : |p.x − midPoint.x| < δ}',
+        '  Sort S by y-coordinate',
+        '  for each p in S do',
+        '    check next 7 points in S',
+        '    if dist(p, q) < δ then δ = dist(p, q)',
+        '  return δ'
+    ].join('\n'),
     generateInput() {
         const n = 24;
         const pts = [];

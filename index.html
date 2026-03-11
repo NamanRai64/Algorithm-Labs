@@ -104,6 +104,12 @@
                 <h1 class="algo-title" id="algoTitle">Merge Sort</h1>
                 <span class="algo-badge" id="algoBadge">Sorting</span>
             </div>
+            <div class="topbar-shortcuts">
+                <kbd>Space</kbd> Play/Pause
+                <kbd>→</kbd> Step
+                <kbd>←</kbd> Back
+                <kbd>R</kbd> Reset
+            </div>
         </header>
 
         <!-- Content Area -->
@@ -118,6 +124,19 @@
                 </div>
             </section>
 
+            <!-- Pseudocode Panel -->
+            <section class="panel pseudocode-panel" id="pseudocodePanel">
+                <div class="panel-header">
+                    <h2 class="panel-title">📝 Pseudocode</h2>
+                    <button class="toggle-btn" id="togglePseudocode" title="Toggle pseudocode">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                </div>
+                <div class="pseudocode-body" id="pseudocodeBody">
+                    <pre class="pseudocode" id="pseudocodeContent"></pre>
+                </div>
+            </section>
+
             <!-- Visualization Area -->
             <section class="panel viz-panel" id="vizPanel">
                 <div class="panel-header">
@@ -126,6 +145,9 @@
                         <span id="stepPhase" class="step-phase">Ready</span>
                         <span id="stepCounter" class="step-counter">Step 0 / 0</span>
                     </div>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar" style="width: 0%"></div>
                 </div>
                 <div class="viz-container" id="vizContainer">
                     <!-- Algorithm visualization rendered here -->
@@ -160,9 +182,13 @@
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg>
                         <span>Step</span>
                     </button>
-                    <button class="ctrl-btn" id="btnNewInput" title="New Input">
+                    <button class="ctrl-btn" id="btnNewInput" title="New Random Input">
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.78 7.78 5.5 5.5 0 0 1 7.78-7.78zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
-                        <span>New Input</span>
+                        <span>Random</span>
+                    </button>
+                    <button class="ctrl-btn" id="btnCustomInput" title="Enter Custom Input">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        <span>Custom</span>
                     </button>
                 </div>
                 <div class="controls-right">
@@ -240,8 +266,55 @@
                     </div>
                 </div>
             </section>
+
+            <!-- Algorithm Comparison Table -->
+            <section class="panel comparison-panel" id="comparisonPanel">
+                <div class="panel-header">
+                    <h2 class="panel-title">📊 Algorithm Comparison</h2>
+                    <button class="toggle-btn" id="toggleComparison" title="Toggle comparison table">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                </div>
+                <div class="comparison-body" id="comparisonBody">
+                    <div class="table-scroll">
+                        <table class="comparison-table" id="comparisonTable">
+                            <thead>
+                                <tr>
+                                    <th>Algorithm</th>
+                                    <th>Recurrence</th>
+                                    <th>Best</th>
+                                    <th>Average</th>
+                                    <th>Worst</th>
+                                    <th>Space</th>
+                                </tr>
+                            </thead>
+                            <tbody id="comparisonTableBody">
+                                <!-- Filled dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
         </div>
     </main>
+
+    <!-- Custom Input Modal -->
+    <div class="modal-overlay" id="customInputModal" style="display:none">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Custom Input</h3>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-hint" id="modalHint">Enter comma-separated numbers:</p>
+                <textarea class="modal-input" id="modalInput" rows="3" placeholder="e.g. 38, 27, 43, 3, 9, 82, 10"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="ctrl-btn" id="modalCancel">Cancel</button>
+                <button class="ctrl-btn primary" id="modalApply">Apply & Visualize</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Scripts -->
     <script src="app.js"></script>

@@ -27,6 +27,23 @@ AlgorithmLab.register({
         conquer: 'Recursively sort the left partition and the right partition.',
         combine: 'No work needed — the array is sorted in-place after conquering. Cost: O(1).'
     },
+    pseudocode: [
+        'function QUICKSORT(A, lo, hi)',
+        '  if lo < hi then',
+        '    p = PARTITION(A, lo, hi)',
+        '    QUICKSORT(A, lo, p - 1)',
+        '    QUICKSORT(A, p + 1, hi)',
+        '',
+        'function PARTITION(A, lo, hi)',
+        '  pivot = A[hi]',
+        '  i = lo - 1',
+        '  for j = lo to hi - 1 do',
+        '    if A[j] ≤ pivot then',
+        '      i = i + 1',
+        '      swap A[i] and A[j]',
+        '  swap A[i+1] and A[hi]',
+        '  return i + 1'
+    ].join('\n'),
     generateInput() {
         const n = 16;
         return Array.from({ length: n }, () => Math.floor(Math.random() * 95) + 5);

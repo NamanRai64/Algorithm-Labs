@@ -27,6 +27,25 @@ AlgorithmLab.register({
         conquer: 'Recursively compute the convex hull of left and right halves.',
         combine: 'Merge the two hulls by finding upper and lower tangent lines. Cost: O(n).'
     },
+    pseudocode: [
+        'function CONVEX-HULL(P)',
+        '  Sort P by x-coordinate',
+        '  return HULL-REC(P)',
+        '',
+        'function HULL-REC(P)',
+        '  if |P| ≤ 5 then',
+        '    return brute-force hull',
+        '  mid = ⌊|P| / 2⌋',
+        '  leftHull = HULL-REC(P[0..mid])',
+        '  rightHull = HULL-REC(P[mid+1..|P|])',
+        '  return MERGE-HULLS(leftHull, rightHull)',
+        '',
+        'function MERGE-HULLS(L, R)',
+        '  Find upper tangent of L and R',
+        '  Find lower tangent of L and R',
+        '  Combine vertices between tangents',
+        '  return merged hull'
+    ].join('\n'),
     generateInput() {
         const n = 30;
         const pts = [];

@@ -27,6 +27,26 @@ AlgorithmLab.register({
         conquer: 'Recursively sort the left half and the right half.',
         combine: 'Merge the two sorted halves by comparing elements in order. Cost: O(n).'
     },
+    pseudocode: [
+        'function MERGE-SORT(A, lo, hi)',
+        '  if lo < hi then',
+        '    mid = ⌊(lo + hi) / 2⌋',
+        '    MERGE-SORT(A, lo, mid)',
+        '    MERGE-SORT(A, mid+1, hi)',
+        '    MERGE(A, lo, mid, hi)',
+        '',
+        'function MERGE(A, lo, mid, hi)',
+        '  let L = A[lo..mid]',
+        '  let R = A[mid+1..hi]',
+        '  i = 0, j = 0, k = lo',
+        '  while i < |L| and j < |R| do',
+        '    if L[i] ≤ R[j] then',
+        '      A[k] = L[i]; i++',
+        '    else',
+        '      A[k] = R[j]; j++',
+        '    k++',
+        '  copy remaining L or R into A'
+    ].join('\n'),
     generateInput() {
         const n = 16;
         return Array.from({ length: n }, () => Math.floor(Math.random() * 95) + 5);

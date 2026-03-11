@@ -52,6 +52,22 @@ const AlgorithmLab = (() => {
         dom.divideText = $('divideText');
         dom.conquerText = $('conquerText');
         dom.combineText = $('combineText');
+        // New feature DOM refs
+        dom.progressBar = $('progressBar');
+        dom.pseudocodeContent = $('pseudocodeContent');
+        dom.pseudocodeBody = $('pseudocodeBody');
+        dom.togglePseudocode = $('togglePseudocode');
+        dom.comparisonTableBody = $('comparisonTableBody');
+        dom.comparisonBody = $('comparisonBody');
+        dom.toggleComparison = $('toggleComparison');
+        dom.customInputModal = $('customInputModal');
+        dom.modalTitle = $('modalTitle');
+        dom.modalHint = $('modalHint');
+        dom.modalInput = $('modalInput');
+        dom.modalClose = $('modalClose');
+        dom.modalCancel = $('modalCancel');
+        dom.modalApply = $('modalApply');
+        dom.btnCustomInput = $('btnCustomInput');
     }
 
     // ── Registration ──
@@ -96,6 +112,12 @@ const AlgorithmLab = (() => {
         dom.conquerText.textContent = c.conquer || '—';
         dom.combineText.textContent = c.combine || '—';
 
+        // Pseudocode
+        updatePseudocode(algo);
+
+        // Comparison table highlight
+        updateComparisonHighlight(id);
+
         resetVisualization();
 
         // Close sidebar on mobile
@@ -115,6 +137,7 @@ const AlgorithmLab = (() => {
         dom.stepPhase.className = 'step-phase';
         dom.stepCounter.textContent = 'Step 0 / 0';
         dom.explanationText.textContent = 'Click Play to begin the visualization.';
+        dom.progressBar.style.width = '0%';
         updatePlayIcon();
     }
 
@@ -156,9 +179,16 @@ const AlgorithmLab = (() => {
         dom.stepCounter.textContent = `Step ${stepIndex + 1} / ${steps.length}`;
         dom.explanationText.textContent = step.explanation || '';
 
+        // Progress bar
+        const pct = steps.length > 0 ? ((stepIndex + 1) / steps.length) * 100 : 0;
+        dom.progressBar.style.width = pct + '%';
+
         const phase = step.phase || 'ready';
         dom.stepPhase.textContent = phase.charAt(0).toUpperCase() + phase.slice(1);
         dom.stepPhase.className = 'step-phase ' + phase;
+
+        // Pseudocode line highlight
+        highlightPseudocodeLine(step.codeLine || -1);
 
         // Render
         if (currentAlgo.usesCanvas) {
@@ -302,6 +332,128 @@ const AlgorithmLab = (() => {
         container.innerHTML = html;
     }
 
+    // ── Pseudocode ──
+    function updatePseudocode(algo) {
+        if (!algo.pseudocode) {
+            dom.pseudocodeContent.innerHTML = '<span class="line"><span class="comment">// No pseudocode available</span></span>';
+            return;
+        }
+        const lines = algo.pseudocode.split('\n');
+        dom.pseudocodeContent.innerHTML = lines.map(line => {
+            let escaped = line.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            // Syntax highlight keywords
+            escaped = escaped.replace(/\b(function|if|else|for|while|return|then|do|end|to|downto|let|and|or|not)\b/g, '<span class="keyword">$1</span>');
+            escaped = escaped.replace(/\b(MERGE-SORT|MERGE|PARTITION|QUICKSORT|STRASSEN|FIND-MIN-MAX|MAX-CROSSING|MAX-SUBARRAY|CLOSEST-PAIR|CONVEX-HULL|MATRIX-MULTIPLY)\b/g, '<span class="fn-name">$1</span>');
+            return `<span class="line">${escaped}</span>`;
+        }).join('');
+    }
+
+    function highlightPseudocodeLine(lineNum) {
+        const lines = dom.pseudocodeContent.querySelectorAll('.line');
+        lines.forEach((el, i) => {
+            el.classList.toggle('highlight', i === lineNum);
+        });
+    }
+
+    // ── Comparison Table ──
+    function buildComparisonTable() {
+        let html = '';
+        Object.values(algorithms).forEach(algo => {
+            const c = algo.complexity;
+            html += `<tr data-algo-id="${algo.id}">
+                <td>${algo.name}</td>
+                <td>${c.recurrence || '—'}</td>
+                <td>${c.bestCase || c.time || '—'}</td>
+                <td>${c.avgCase || c.time || '—'}</td>
+                <td>${c.worstCase || c.time || '—'}</td>
+                <td>${c.space || '—'}</td>
+            </tr>`;
+        });
+        dom.comparisonTableBody.innerHTML = html;
+    }
+
+    function updateComparisonHighlight(activeId) {
+        dom.comparisonTableBody.querySelectorAll('tr').forEach(tr => {
+            tr.classList.toggle('active-row', tr.dataset.algoId === activeId);
+        });
+    }
+
+    // ── Custom Input Modal ──
+    function openCustomInputModal() {
+        if (!currentAlgo) return;
+        dom.modalTitle.textContent = `Custom Input — ${currentAlgo.name}`;
+
+        // Set appropriate hint based on algorithm category
+        if (currentAlgo.category === 'Matrix') {
+            dom.modalHint.textContent = 'Enter 4×4 matrix values row by row (comma-separated, rows on new lines):';
+            dom.modalInput.placeholder = '1, 2, 3, 4\n5, 6, 7, 8\n9, 10, 11, 12\n13, 14, 15, 16';
+        } else if (currentAlgo.category === 'Geometry') {
+            dom.modalHint.textContent = 'Enter points as x,y pairs (one point per line):';
+            dom.modalInput.placeholder = '10, 20\n30, 50\n45, 15\n60, 80\n25, 35';
+        } else {
+            dom.modalHint.textContent = 'Enter comma-separated numbers:';
+            dom.modalInput.placeholder = 'e.g. 38, 27, 43, 3, 9, 82, 10';
+        }
+        dom.modalInput.value = '';
+        dom.customInputModal.style.display = 'flex';
+        dom.modalInput.focus();
+    }
+
+    function closeModal() {
+        dom.customInputModal.style.display = 'none';
+    }
+
+    function applyCustomInput() {
+        const raw = dom.modalInput.value.trim();
+        if (!raw) return;
+
+        let input;
+        try {
+            if (currentAlgo.category === 'Geometry') {
+                // Parse points: x,y per line
+                input = raw.split('\n').map(line => {
+                    const [x, y] = line.split(',').map(Number);
+                    return { x, y };
+                }).filter(p => !isNaN(p.x) && !isNaN(p.y));
+            } else if (currentAlgo.category === 'Matrix') {
+                // Parse matrix rows
+                const rows = raw.split('\n').map(line => line.split(',').map(s => parseInt(s.trim(), 10)));
+                input = { A: rows, B: rows }; // Use same for both matrices if only one provided
+            } else {
+                // Parse array
+                input = raw.split(',').map(s => parseInt(s.trim(), 10)).filter(n => !isNaN(n));
+            }
+        } catch (e) {
+            alert('Invalid input format. Please check and try again.');
+            return;
+        }
+
+        closeModal();
+
+        // Run with custom input
+        if (currentAlgo.customRun) {
+            steps = currentAlgo.customRun(input);
+        } else {
+            steps = currentAlgo.run(input);
+        }
+        stepIndex = -1;
+        dom.vizPlaceholder.style.display = 'none';
+
+        if (currentAlgo.usesCanvas) {
+            dom.vizCanvas.style.display = 'block';
+            dom.vizDOM.style.display = 'none';
+            resizeCanvas();
+        } else {
+            dom.vizCanvas.style.display = 'none';
+            dom.vizDOM.style.display = 'flex';
+        }
+
+        if (steps.length > 0) {
+            stepIndex = 0;
+            renderStep();
+        }
+    }
+
     // ── Init ──
     function init() {
         cacheDom();
@@ -319,6 +471,57 @@ const AlgorithmLab = (() => {
         dom.btnReset.addEventListener('click', resetVisualization);
         dom.btnNewInput.addEventListener('click', () => { resetVisualization(); generateAndRun(); });
         dom.speedSlider.addEventListener('input', updateSpeed);
+
+        // Custom input
+        dom.btnCustomInput.addEventListener('click', openCustomInputModal);
+        dom.modalClose.addEventListener('click', closeModal);
+        dom.modalCancel.addEventListener('click', closeModal);
+        dom.modalApply.addEventListener('click', applyCustomInput);
+        dom.customInputModal.addEventListener('click', e => {
+            if (e.target === dom.customInputModal) closeModal();
+        });
+
+        // Collapsible panels
+        dom.togglePseudocode.addEventListener('click', () => {
+            dom.pseudocodeBody.classList.toggle('collapsed');
+            dom.togglePseudocode.classList.toggle('collapsed');
+        });
+        dom.toggleComparison.addEventListener('click', () => {
+            dom.comparisonBody.classList.toggle('collapsed');
+            dom.toggleComparison.classList.toggle('collapsed');
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', e => {
+            // Don't trigger if typing in input/textarea
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+            switch (e.code) {
+                case 'Space':
+                    e.preventDefault();
+                    togglePlay();
+                    break;
+                case 'ArrowRight':
+                    e.preventDefault();
+                    stop();
+                    stepForward();
+                    break;
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    stop();
+                    stepBack();
+                    break;
+                case 'KeyR':
+                    e.preventDefault();
+                    resetVisualization();
+                    break;
+                case 'KeyN':
+                    e.preventDefault();
+                    resetVisualization();
+                    generateAndRun();
+                    break;
+            }
+        });
 
         // Menu toggle
         dom.menuToggle.addEventListener('click', () => dom.sidebar.classList.toggle('open'));
@@ -344,6 +547,7 @@ const AlgorithmLab = (() => {
 
         // Auto-select first algorithm once all scripts are loaded
         setTimeout(() => {
+            buildComparisonTable();
             if (algorithms['mergeSort']) switchTo('mergeSort');
         }, 50);
     }

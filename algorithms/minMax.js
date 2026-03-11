@@ -27,6 +27,19 @@ AlgorithmLab.register({
         conquer: 'Recursively find min and max in each half.',
         combine: 'Compare the two mins and two maxes: min = min(leftMin, rightMin), max = max(leftMax, rightMax). Cost: O(1).'
     },
+    pseudocode: [
+        'function FIND-MIN-MAX(A, lo, hi)',
+        '  if lo == hi then',
+        '    return (A[lo], A[lo])',
+        '  if hi == lo + 1 then',
+        '    if A[lo] < A[hi] then',
+        '      return (A[lo], A[hi])',
+        '    else return (A[hi], A[lo])',
+        '  mid = ⌊(lo + hi) / 2⌋',
+        '  (min1, max1) = FIND-MIN-MAX(A, lo, mid)',
+        '  (min2, max2) = FIND-MIN-MAX(A, mid+1, hi)',
+        '  return (min(min1,min2), max(max1,max2))'
+    ].join('\n'),
     generateInput() {
         const n = 16;
         return Array.from({ length: n }, () => Math.floor(Math.random() * 95) + 5);
