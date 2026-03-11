@@ -58,6 +58,17 @@ const AlgorithmLab = (() => {
         dom.divideText = $('divideText');
         dom.conquerText = $('conquerText');
         dom.combineText = $('combineText');
+        dom.divideText = $('divideText');
+        dom.conquerText = $('conquerText');
+        dom.combineText = $('combineText');
+        
+        // Panels
+        dom.homePanel = $('homePanel');
+        dom.descriptionPanel = $('descriptionPanel');
+        dom.pseudocodePanel = $('pseudocodePanel');
+        dom.vizPanel = $('vizPanel');
+        dom.complexityPanel = Math.random() ? document.querySelector('.panel:nth-of-type(5)') : document.querySelector('.panel'); // The complexity panel doesn't have an ID but we can toggle them all. Actually, let's cache them by IDs if we had them, OR just toggle `.panel` vs `.home-panel`. Wait, there's no ID on the complexity panel. We can just use queries.
+        
         // New feature DOM refs
         dom.progressBar = $('progressBar');
         dom.pseudocodeContent = $('pseudocodeContent');
@@ -92,9 +103,40 @@ const AlgorithmLab = (() => {
     // ── Switch Algorithm ──
     function switchTo(id) {
         stop();
+        
+        // --- Home View Logic --- //
+        if (id === 'home') {
+            currentAlgo = null;
+            // Update nav
+            dom.sidebarNav.querySelectorAll('.nav-item').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.algo === 'home');
+            });
+            dom.algoTitle.textContent = 'Dashboard';
+            dom.algoBadge.style.display = 'none';
+            dom.btnCompareMode.style.display = 'none';
+            $('topbar').querySelector('.topbar-shortcuts').style.display = 'none';
+            
+            // Show / Hide Panels
+            dom.homePanel.style.display = 'block';
+            document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+            // Hide comparison table
+            dom.comparisonTableBody.closest('.panel').style.display = 'none';
+            
+            dom.sidebar.classList.remove('open');
+            return;
+        }
+
+        // --- Algorithm View Logic --- //
         const algo = algorithms[id];
         if (!algo) return;
         currentAlgo = algo;
+
+        // Show all panels again
+        dom.homePanel.style.display = 'none';
+        document.querySelectorAll('.panel').forEach(p => p.style.display = 'block');
+        // Comparison panel is a panel so it's shown.
+        dom.algoBadge.style.display = 'inline-block';
+        $('topbar').querySelector('.topbar-shortcuts').style.display = 'block';
 
         // Update nav
         dom.sidebarNav.querySelectorAll('.nav-item').forEach(btn => {
@@ -516,6 +558,7 @@ const AlgorithmLab = (() => {
     }
 
     // ── Init ──
+
     function init() {
         cacheDom();
 
@@ -523,6 +566,13 @@ const AlgorithmLab = (() => {
         dom.sidebarNav.addEventListener('click', e => {
             const btn = e.target.closest('.nav-item');
             if (btn) switchTo(btn.dataset.algo);
+        });
+
+        // Home algo cards
+        document.querySelectorAll('.algo-card').forEach(card => {
+            card.addEventListener('click', () => {
+                switchTo(card.dataset.algo);
+            });
         });
 
         // Controls
@@ -618,7 +668,7 @@ const AlgorithmLab = (() => {
         // Auto-select first algorithm once all scripts are loaded
         setTimeout(() => {
             buildComparisonTable();
-            if (algorithms['mergeSort']) switchTo('mergeSort');
+            switchTo('home');
         }, 50);
     }
 
