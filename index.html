@@ -35,10 +35,18 @@
         </div>
 
         <nav class="sidebar-nav" id="sidebarNav">
+            <!-- Home -->
+            <div class="nav-group">
+                <button class="nav-item active" data-algo="home" id="nav-home">
+                    <span class="nav-icon home">🏠</span>
+                    <span class="nav-label">Home</span>
+                </button>
+            </div>
+
             <!-- Sorting -->
             <div class="nav-group">
                 <div class="nav-group-label">Sorting</div>
-                <button class="nav-item active" data-algo="mergeSort" id="nav-mergeSort">
+                <button class="nav-item" data-algo="mergeSort" id="nav-mergeSort">
                     <span class="nav-icon sorting">⇅</span>
                     <span class="nav-label">Merge Sort</span>
                 </button>
@@ -117,6 +125,71 @@
 
         <!-- Content Area -->
         <div class="content-area">
+            
+            <!-- Home Dashboard -->
+            <section class="home-panel" id="homePanel">
+                <div class="home-hero">
+                    <h2 class="home-title">Divide & Conquer Visualizer</h2>
+                    <p class="home-subtitle">Interactive algorithm lab for step-by-step learning and complexity analysis.</p>
+                </div>
+                
+                <h3 class="category-heading">Sorting</h3>
+                <div class="algo-grid">
+                    <div class="algo-card" data-algo="mergeSort">
+                        <div class="icon-wrap sorting">⇅</div>
+                        <h4>Merge Sort</h4>
+                        <p>Recursive array splitting and ordered merging.</p>
+                    </div>
+                    <div class="algo-card" data-algo="quickSort">
+                        <div class="icon-wrap sorting">⚡</div>
+                        <h4>Quick Sort</h4>
+                        <p>Pivot-based partitioning and sorting.</p>
+                    </div>
+                </div>
+
+                <h3 class="category-heading">Matrix</h3>
+                <div class="algo-grid">
+                    <div class="algo-card" data-algo="matrixMultiply">
+                        <div class="icon-wrap matrix">▦</div>
+                        <h4>Matrix Multiply</h4>
+                        <p>O(n³) block multiplication using 8 recursive calls.</p>
+                    </div>
+                    <div class="algo-card" data-algo="strassen">
+                        <div class="icon-wrap matrix">✦</div>
+                        <h4>Strassen's Multiply</h4>
+                        <p>O(n^2.81) optimized multiplication using 7 products.</p>
+                    </div>
+                </div>
+
+                <h3 class="category-heading">Search & Optimization</h3>
+                <div class="algo-grid">
+                    <div class="algo-card" data-algo="minMax">
+                        <div class="icon-wrap search">↕</div>
+                        <h4>Min & Max Finding</h4>
+                        <p>Find minimum and maximum in 3n/2 comparisons.</p>
+                    </div>
+                    <div class="algo-card" data-algo="largestSubarray">
+                        <div class="icon-wrap search">∑</div>
+                        <h4>Largest Subarray Sum</h4>
+                        <p>Find contiguous subarray with max sum via mid crossing.</p>
+                    </div>
+                </div>
+
+                <h3 class="category-heading">Geometry</h3>
+                <div class="algo-grid">
+                    <div class="algo-card" data-algo="closestPair">
+                        <div class="icon-wrap geometry">⊹</div>
+                        <h4>Closest Pair</h4>
+                        <p>Find the two closest points in a 2D plane.</p>
+                    </div>
+                    <div class="algo-card" data-algo="convexHull">
+                        <div class="icon-wrap geometry">⬡</div>
+                        <h4>Convex Hull</h4>
+                        <p>Find the outer point perimeter enclosing the set.</p>
+                    </div>
+                </div>
+            </section>
+
             <!-- Description Panel -->
             <section class="panel description-panel" id="descriptionPanel">
                 <div class="panel-header">

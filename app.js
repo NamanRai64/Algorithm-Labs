@@ -12,6 +12,12 @@ const AlgorithmLab = (() => {
     let playTimer = null;
     let speedMs = 600;
 
+    let compareMode = false;
+    let algo1 = null;
+    let algo2 = null;
+    let steps1 = [];
+    let steps2 = [];
+
     // ── DOM refs ──
     const $ = id => document.getElementById(id);
     const dom = {};
@@ -68,6 +74,14 @@ const AlgorithmLab = (() => {
         dom.modalCancel = $('modalCancel');
         dom.modalApply = $('modalApply');
         dom.btnCustomInput = $('btnCustomInput');
+        dom.btnCompareMode = $('btnCompareMode');
+        dom.compareDOM = $('compareDOM');
+        dom.vizDOM1 = $('vizDOM1');
+        dom.vizDOM2 = $('vizDOM2');
+        dom.compareTitle1 = $('compareTitle1');
+        dom.compareTitle2 = $('compareTitle2');
+        dom.comparePhase1 = $('comparePhase1');
+        dom.comparePhase2 = $('comparePhase2');
     }
 
     // ── Registration ──
@@ -118,6 +132,15 @@ const AlgorithmLab = (() => {
         // Comparison table highlight
         updateComparisonHighlight(id);
 
+        const categoryAlgos = Object.values(algorithms).filter(a => a.category === algo.category);
+        if (categoryAlgos.length > 1 && !algo.usesCanvas) {
+            dom.btnCompareMode.style.display = 'inline-flex';
+        } else {
+            dom.btnCompareMode.style.display = 'none';
+        }
+        compareMode = false;
+        dom.btnCompareMode.classList.remove('active');
+
         resetVisualization();
 
         // Close sidebar on mobile
@@ -130,9 +153,17 @@ const AlgorithmLab = (() => {
         steps = [];
         stepIndex = -1;
         dom.vizPlaceholder.style.display = 'flex';
-        dom.vizDOM.innerHTML = '';
-        dom.vizDOM.style.display = 'none';
-        dom.vizCanvas.style.display = 'none';
+        if (!compareMode) {
+            dom.compareDOM.style.display = 'none';
+            dom.vizDOM.style.display = 'none';
+            dom.vizCanvas.style.display = 'none';
+            dom.vizDOM.innerHTML = '';
+        } else {
+            dom.vizDOM1.innerHTML = '';
+            dom.vizDOM2.innerHTML = '';
+            dom.comparePhase1.textContent = 'READY';
+            dom.comparePhase2.textContent = 'READY';
+        }
         dom.stepPhase.textContent = 'Ready';
         dom.stepPhase.className = 'step-phase';
         dom.stepCounter.textContent = 'Step 0 / 0';
@@ -141,26 +172,53 @@ const AlgorithmLab = (() => {
         updatePlayIcon();
     }
 
-    function generateAndRun() {
+    function generateAndRun(customInput = null) {
         if (!currentAlgo) return;
-        const input = currentAlgo.generateInput();
-        steps = currentAlgo.run(input);
-        stepIndex = -1;
-        dom.vizPlaceholder.style.display = 'none';
-
-        if (currentAlgo.usesCanvas) {
-            dom.vizCanvas.style.display = 'block';
-            dom.vizDOM.style.display = 'none';
-            resizeCanvas();
-        } else {
+        const input = customInput || currentAlgo.generateInput();
+        
+        if (compareMode) {
+            const categoryAlgos = Object.values(algorithms).filter(a => a.category === currentAlgo.category);
+            algo1 = currentAlgo;
+            algo2 = categoryAlgos.find(a => a.id !== currentAlgo.id) || currentAlgo;
+            
+            const inputCopy = JSON.parse(JSON.stringify(input));
+            steps1 = algo1.customRun ? algo1.customRun(input) : algo1.run(input);
+            steps2 = algo2.customRun ? algo2.customRun(inputCopy) : algo2.run(inputCopy);
+            
+            steps = new Array(Math.max(steps1.length, steps2.length));
+            stepIndex = -1;
+            
+            dom.vizPlaceholder.style.display = 'none';
             dom.vizCanvas.style.display = 'none';
-            dom.vizDOM.style.display = 'flex';
-        }
-
-        // Render initial state
-        if (steps.length > 0) {
-            stepIndex = 0;
-            renderStep();
+            dom.vizDOM.style.display = 'none';
+            dom.compareDOM.style.display = 'flex';
+            
+            dom.compareTitle1.textContent = algo1.name;
+            dom.compareTitle2.textContent = algo2.name;
+            
+            if (steps.length > 0) {
+                stepIndex = 0;
+                renderStep();
+            }
+        } else {
+            steps = currentAlgo.customRun ? currentAlgo.customRun(input) : currentAlgo.run(input);
+            stepIndex = -1;
+            dom.vizPlaceholder.style.display = 'none';
+            dom.compareDOM.style.display = 'none';
+    
+            if (currentAlgo.usesCanvas) {
+                dom.vizCanvas.style.display = 'block';
+                dom.vizDOM.style.display = 'none';
+                resizeCanvas();
+            } else {
+                dom.vizCanvas.style.display = 'none';
+                dom.vizDOM.style.display = 'flex';
+            }
+    
+            if (steps.length > 0) {
+                stepIndex = 0;
+                renderStep();
+            }
         }
     }
 
@@ -172,30 +230,54 @@ const AlgorithmLab = (() => {
     }
 
     function renderStep() {
-        if (!currentAlgo || stepIndex < 0 || stepIndex >= steps.length) return;
-        const step = steps[stepIndex];
-
-        // Update step info
-        dom.stepCounter.textContent = `Step ${stepIndex + 1} / ${steps.length}`;
-        dom.explanationText.textContent = step.explanation || '';
-
-        // Progress bar
-        const pct = steps.length > 0 ? ((stepIndex + 1) / steps.length) * 100 : 0;
-        dom.progressBar.style.width = pct + '%';
-
-        const phase = step.phase || 'ready';
-        dom.stepPhase.textContent = phase.charAt(0).toUpperCase() + phase.slice(1);
-        dom.stepPhase.className = 'step-phase ' + phase;
-
-        // Pseudocode line highlight
-        highlightPseudocodeLine(step.codeLine || -1);
-
-        // Render
-        if (currentAlgo.usesCanvas) {
-            const ctx = dom.vizCanvas.getContext('2d');
-            currentAlgo.render(step, ctx, dom.vizCanvas);
+        if (compareMode) {
+            const t1 = steps1.length;
+            const t2 = steps2.length;
+            const max = Math.max(t1, t2);
+            if (stepIndex < 0 || stepIndex >= max) return;
+            
+            dom.stepCounter.textContent = `Step ${stepIndex + 1} / ${max}`;
+            dom.explanationText.textContent = `Comparing execution of ${algo1.name} and ${algo2.name}...`;
+            dom.progressBar.style.width = max > 0 ? ((stepIndex + 1) / max) * 100 + '%' : '0%';
+            dom.stepPhase.textContent = 'Comparing';
+            dom.stepPhase.className = 'step-phase';
+            
+            const i1 = Math.min(stepIndex, t1 - 1);
+            const s1 = steps1[i1];
+            dom.comparePhase1.textContent = (s1.phase || 'ready').toUpperCase() + ` | Step: ${i1 + 1}/${t1}`;
+            dom.comparePhase1.className = 'compare-sub ' + (s1.phase || '');
+            algo1.render(s1, dom.vizDOM1);
+            
+            const i2 = Math.min(stepIndex, t2 - 1);
+            const s2 = steps2[i2];
+            dom.comparePhase2.textContent = (s2.phase || 'ready').toUpperCase() + ` | Step: ${i2 + 1}/${t2}`;
+            dom.comparePhase2.className = 'compare-sub ' + (s2.phase || '');
+            algo2.render(s2, dom.vizDOM2);
+            
+            highlightPseudocodeLine(-1);
+            
         } else {
-            currentAlgo.render(step, dom.vizDOM);
+            if (!currentAlgo || stepIndex < 0 || stepIndex >= steps.length) return;
+            const step = steps[stepIndex];
+    
+            dom.stepCounter.textContent = `Step ${stepIndex + 1} / ${steps.length}`;
+            dom.explanationText.textContent = step.explanation || '';
+    
+            const pct = steps.length > 0 ? ((stepIndex + 1) / steps.length) * 100 : 0;
+            dom.progressBar.style.width = pct + '%';
+    
+            const phase = step.phase || 'ready';
+            dom.stepPhase.textContent = phase.charAt(0).toUpperCase() + phase.slice(1);
+            dom.stepPhase.className = 'step-phase ' + phase;
+    
+            highlightPseudocodeLine(step.codeLine || -1);
+    
+            if (currentAlgo.usesCanvas) {
+                const ctx = dom.vizCanvas.getContext('2d');
+                currentAlgo.render(step, ctx, dom.vizCanvas);
+            } else {
+                currentAlgo.render(step, dom.vizDOM);
+            }
         }
     }
 
@@ -429,29 +511,8 @@ const AlgorithmLab = (() => {
         }
 
         closeModal();
-
-        // Run with custom input
-        if (currentAlgo.customRun) {
-            steps = currentAlgo.customRun(input);
-        } else {
-            steps = currentAlgo.run(input);
-        }
-        stepIndex = -1;
-        dom.vizPlaceholder.style.display = 'none';
-
-        if (currentAlgo.usesCanvas) {
-            dom.vizCanvas.style.display = 'block';
-            dom.vizDOM.style.display = 'none';
-            resizeCanvas();
-        } else {
-            dom.vizCanvas.style.display = 'none';
-            dom.vizDOM.style.display = 'flex';
-        }
-
-        if (steps.length > 0) {
-            stepIndex = 0;
-            renderStep();
-        }
+        resetVisualization();
+        generateAndRun(input);
     }
 
     // ── Init ──
@@ -479,6 +540,15 @@ const AlgorithmLab = (() => {
         dom.modalApply.addEventListener('click', applyCustomInput);
         dom.customInputModal.addEventListener('click', e => {
             if (e.target === dom.customInputModal) closeModal();
+        });
+
+        // Compare Mode
+        dom.btnCompareMode.addEventListener('click', () => {
+            compareMode = !compareMode;
+            dom.btnCompareMode.classList.toggle('active', compareMode);
+            resetVisualization();
+            if (isPlaying) stop();
+            generateAndRun();
         });
 
         // Collapsible panels
