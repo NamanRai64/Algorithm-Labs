@@ -18,6 +18,77 @@ const AlgorithmLab = (() => {
     let steps1 = [];
     let steps2 = [];
 
+    // ── Audio ──
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    let soundEnabled = false;
+
+    // ── Audio Engine ──
+    function playTone(value, type = 'sine', duration = 0.1) {
+        if (!soundEnabled || compareMode) return;
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        
+        const minFreq = 150;
+        const maxFreq = 900;
+        const val = typeof value === 'number' ? Math.abs(value) : 50;
+        const freq = minFreq + ((val % 100) / 100) * (maxFreq - minFreq);
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+        const volume = 0.1;
+        gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+    }
+
+    function toggleSound() {
+        soundEnabled = !soundEnabled;
+        if (soundEnabled && audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+        dom.iconSoundOn.style.display = soundEnabled ? 'block' : 'none';
+        dom.iconSoundOff.style.display = soundEnabled ? 'none' : 'block';
+    }
+
+    // ── Execution Log ──
+    function appendLogEntry(stepData, index) {
+        if (compareMode || !dom.logList) return;
+        
+        // Remove active from previous
+        const existing = dom.logList.querySelectorAll('.log-item');
+        
+        // Find if this step already logged (happens on rewind/fast forward)
+        // the easiest way is just to clear the list if we jump backwards, or just rebuild it up to index
+        
+        // Build html
+        const phaseClass = stepData.phase || 'ready';
+        const template = `
+            <div class="log-item ${phaseClass}" id="log-step-${index}">
+                <div class="log-step-num">[Step ${index + 1}]</div>
+                <div class="log-text">${stepData.explanation || ''}</div>
+            </div>
+        `;
+        dom.logList.insertAdjacentHTML('beforeend', template);
+        
+        const newlyAdded = dom.logList.lastElementChild;
+        if (newlyAdded) {
+            newlyAdded.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }
+    }
+
+    function rebuildLog() {
+        if (compareMode || !dom.logList) return;
+        dom.logList.innerHTML = '';
+        for (let i = 0; i <= stepIndex; i++) {
+            if (steps[i]) appendLogEntry(steps[i], i);
+        }
+    }
+
     // ── DOM refs ──
     const $ = id => document.getElementById(id);
     const dom = {};
@@ -93,6 +164,15 @@ const AlgorithmLab = (() => {
         dom.compareTitle2 = $('compareTitle2');
         dom.comparePhase1 = $('comparePhase1');
         dom.comparePhase2 = $('comparePhase2');
+
+        // New feature DOM refs
+        dom.btnSound = $('btnSound');
+        dom.iconSoundOn = $('iconSoundOn');
+        dom.iconSoundOff = $('iconSoundOff');
+        dom.executionPanel = $('executionPanel');
+        dom.toggleLog = $('toggleLog');
+        dom.logBody = $('logBody');
+        dom.logList = $('logList');
     }
 
     // ── Registration ──
@@ -119,8 +199,12 @@ const AlgorithmLab = (() => {
             // Show / Hide Panels
             dom.homePanel.style.display = 'block';
             document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
-            // Hide comparison table
-            dom.comparisonTableBody.closest('.panel').style.display = 'none';
+            // Hide comparison table and execution log
+            if(dom.comparisonTableBody && dom.comparisonTableBody.closest) {
+                const p = dom.comparisonTableBody.closest('.panel');
+                if(p) p.style.display = 'none';
+            }
+            if(dom.executionPanel) dom.executionPanel.style.display = 'none';
             
             dom.sidebar.classList.remove('open');
             return;
@@ -212,6 +296,7 @@ const AlgorithmLab = (() => {
         dom.explanationText.textContent = 'Click Play to begin the visualization.';
         dom.progressBar.style.width = '0%';
         updatePlayIcon();
+        if (dom.logList) dom.logList.innerHTML = '';
     }
 
     function generateAndRun(customInput = null) {
@@ -313,6 +398,22 @@ const AlgorithmLab = (() => {
             dom.stepPhase.className = 'step-phase ' + phase;
     
             highlightPseudocodeLine(step.codeLine || -1);
+            
+            // Rebuild log up to this step
+            rebuildLog();
+
+            // Sound logic
+            if (soundEnabled && !compareMode) {
+                let valForSound = 50;
+                if (currentAlgo.category === 'Sorting') {
+                    const hlIndex = Object.keys(step.highlights || {}).find(k => step.highlights[k] === 'active' || step.highlights[k] === 'swap');
+                    if (hlIndex !== undefined && step.array) valForSound = step.array[hlIndex];
+                } else if (currentAlgo.category === 'Search & Optimization') {
+                    const hlIndex = Object.keys(step.highlights || {}).find(k => step.highlights[k] === 'active' || step.highlights[k] === 'mid');
+                    if (hlIndex !== undefined && step.array) valForSound = step.array[hlIndex];
+                }
+                playTone(valForSound, 'triangle', Math.min(speedMs / 1000, 0.2));
+            }
     
             if (currentAlgo.usesCanvas) {
                 const ctx = dom.vizCanvas.getContext('2d');
@@ -582,6 +683,7 @@ const AlgorithmLab = (() => {
         dom.btnReset.addEventListener('click', resetVisualization);
         dom.btnNewInput.addEventListener('click', () => { resetVisualization(); generateAndRun(); });
         dom.speedSlider.addEventListener('input', updateSpeed);
+        dom.btnSound.addEventListener('click', toggleSound);
 
         // Custom input
         dom.btnCustomInput.addEventListener('click', openCustomInputModal);
@@ -605,6 +707,10 @@ const AlgorithmLab = (() => {
         dom.togglePseudocode.addEventListener('click', () => {
             dom.pseudocodeBody.classList.toggle('collapsed');
             dom.togglePseudocode.classList.toggle('collapsed');
+        });
+        dom.toggleLog.addEventListener('click', () => {
+            dom.logBody.classList.toggle('collapsed');
+            dom.toggleLog.classList.toggle('collapsed');
         });
         dom.toggleComparison.addEventListener('click', () => {
             dom.comparisonBody.classList.toggle('collapsed');

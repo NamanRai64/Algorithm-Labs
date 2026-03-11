@@ -1156,6 +1156,46 @@ kbd {
     font-weight: 600;
 }
 
+/* ===== EXECUTION LOG ===== */
+.log-body {
+    max-height: 220px;
+    overflow-y: auto;
+    padding: 10px 16px;
+    transition: max-height var(--transition-normal);
+}
+.log-body.collapsed {
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+.log-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+}
+.log-item {
+    display: flex;
+    gap: 12px;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    background: rgba(0,0,0,0.2);
+    border-left: 3px solid var(--border);
+    animation: fadeIn 0.3s ease forwards;
+}
+.log-item.divide { border-left-color: var(--divide-color); }
+.log-item.conquer { border-left-color: var(--conquer-color); }
+.log-item.combine { border-left-color: var(--combine-color); }
+
+.log-step-num {
+    color: var(--text-muted);
+    min-width: 50px;
+}
+.log-text {
+    color: var(--text-primary);
+}
+
 /* ===== COMPARE MODE ===== */
 .compare-mode-btn {
     background: transparent;
