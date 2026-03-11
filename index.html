@@ -285,11 +285,30 @@
                     </button>
                 </div>
                 <div class="controls-right">
+                    <button class="ctrl-btn" id="btnSound" title="Toggle Sound">
+                        <svg id="iconSoundOn" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                        <svg id="iconSoundOff" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+                    </button>
                     <label class="speed-control">
                         <span class="speed-label">Speed</span>
                         <input type="range" id="speedSlider" min="1" max="10" value="5" class="speed-slider">
                         <span class="speed-value" id="speedValue">1×</span>
                     </label>
+                </div>
+            </section>
+
+            <!-- Execution Log Panel -->
+            <section class="panel execution-panel" id="executionPanel">
+                <div class="panel-header">
+                    <h2 class="panel-title">📜 Execution Log</h2>
+                    <button class="toggle-btn" id="toggleLog" title="Toggle execution log">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                </div>
+                <div class="log-body" id="logBody">
+                    <div class="log-list" id="logList">
+                        <!-- Log items added here -->
+                    </div>
                 </div>
             </section>
 
