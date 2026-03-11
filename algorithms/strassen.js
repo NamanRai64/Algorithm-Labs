@@ -14,11 +14,18 @@ AlgorithmLab.register({
     `,
     complexity: {
         recurrence: 'T(n) = 7T(n/2) + O(n²)',
-        time: 'O(n^2.807)',
-        space: 'O(n² log n)',
-        divide: 'Partition each matrix into 4 quadrants and compute auxiliary sums/differences.',
+        recurrenceExplanation: '7 recursive multiplications (not 8!) plus O(n²) additions/subtractions',
+        mastersTheorem: 'Case 1: a=7, b=2, log_b(a)=2.807 > 2 → Θ(n^2.807)',
+        mastersExplanation: 'f(n)=n² = O(n^(log₂7−ε)) = O(n^(2.807−ε)), so Case 1 applies',
+        bestCase: 'Θ(n^2.807)',
+        avgCase: 'Θ(n^2.807)',
+        worstCase: 'Θ(n^2.807)',
+        comparisons: '7 multiplications + 18 additions per recursion level',
+        space: 'O(n² log n) — sub-matrix storage across recursion',
+        subproblems: '7 special products (M₁–M₇) of n/2 × n/2 matrices',
+        divide: 'Partition each matrix into 4 quadrants and compute auxiliary sums/differences. Cost: O(n²).',
         conquer: 'Compute 7 special products M₁ through M₇ recursively.',
-        combine: 'Reconstruct the 4 quadrants of C from M₁–M₇ using additions and subtractions.'
+        combine: 'Reconstruct the 4 quadrants of C from M₁–M₇ using additions and subtractions. Cost: O(n²).'
     },
     generateInput() {
         const n = 4;

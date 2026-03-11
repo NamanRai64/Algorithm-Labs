@@ -15,11 +15,18 @@ AlgorithmLab.register({
     `,
     complexity: {
         recurrence: 'T(n) = 2T(n/2) + O(n log n)',
-        time: 'O(n log² n)',
-        space: 'O(n)',
-        divide: 'Sort by x-coordinate and split points at the median vertical line.',
+        recurrenceExplanation: '2 halves + O(n log n) to sort strip by y and check',
+        mastersTheorem: 'Not standard Case: f(n)=n log n, log_b(a)=1 → O(n log²n)',
+        mastersExplanation: 'Recursion tree analysis: log n levels × O(n log n) per level',
+        bestCase: 'Θ(n log n) — with pre-sorted optimization',
+        avgCase: 'Θ(n log²n)',
+        worstCase: 'O(n log²n)',
+        comparisons: 'Each strip point checks ≤ 7 neighbours → O(n) strip work',
+        space: 'O(n) — for strip array and sorted copies',
+        subproblems: '2 subproblems of size n/2 + strip merge',
+        divide: 'Sort by x-coordinate and split points at the median vertical line. Cost: O(1).',
         conquer: 'Recursively find the closest pair in left and right halves.',
-        combine: 'Check the strip of width 2δ around the dividing line for closer pairs.'
+        combine: 'Check the strip of width 2δ around dividing line. Each point compared to ≤7 others. Cost: O(n log n).'
     },
     generateInput() {
         const n = 24;

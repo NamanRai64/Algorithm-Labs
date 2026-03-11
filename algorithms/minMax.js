@@ -14,11 +14,18 @@ AlgorithmLab.register({
     `,
     complexity: {
         recurrence: 'T(n) = 2T(n/2) + 2',
-        time: 'O(n)',
-        space: 'O(log n)',
-        divide: 'Split the array into two halves at the midpoint.',
+        recurrenceExplanation: '2 subproblems of size n/2, plus 2 comparisons to combine min and max',
+        mastersTheorem: 'Case 1: a=2, b=2, f(n)=2=O(1), log_b(a)=1 > 0 → Θ(n)',
+        mastersExplanation: 'f(n)=O(1) = O(n^(1−ε)) for ε<1, so Case 1 applies → Θ(n)',
+        bestCase: 'Θ(n) — 3n/2 − 2 comparisons',
+        avgCase: 'Θ(n) — 3n/2 − 2 comparisons',
+        worstCase: 'Θ(n) — 3n/2 − 2 comparisons',
+        comparisons: '3⌈n/2⌉ − 2 (fewer than naive 2n − 2)',
+        space: 'O(log n) — recursion stack depth',
+        subproblems: '2 subproblems of size n/2 at each level',
+        divide: 'Split the array into two halves at the midpoint. Cost: O(1).',
         conquer: 'Recursively find min and max in each half.',
-        combine: 'Compare the two mins and two maxes: overall min = min(leftMin, rightMin), max = max(leftMax, rightMax).'
+        combine: 'Compare the two mins and two maxes: min = min(leftMin, rightMin), max = max(leftMax, rightMax). Cost: O(1).'
     },
     generateInput() {
         const n = 16;

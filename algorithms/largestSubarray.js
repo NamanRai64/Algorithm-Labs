@@ -14,11 +14,18 @@ AlgorithmLab.register({
     `,
     complexity: {
         recurrence: 'T(n) = 2T(n/2) + O(n)',
-        time: 'O(n log n)',
-        space: 'O(log n)',
-        divide: 'Split the array at the midpoint.',
+        recurrenceExplanation: '2 half-problems + O(n) to find crossing subarray from midpoint',
+        mastersTheorem: 'Case 2: a=2, b=2, f(n)=n, log_b(a)=1 → Θ(n log n)',
+        mastersExplanation: 'f(n) = Θ(n^log_b(a)) = Θ(n¹), Case 2 applies',
+        bestCase: 'Θ(n log n)',
+        avgCase: 'Θ(n log n)',
+        worstCase: 'Θ(n log n)',
+        comparisons: '~2n log₂n comparisons across all levels',
+        space: 'O(log n) — recursion stack depth',
+        subproblems: '2 subproblems of size n/2 + crossing check',
+        divide: 'Split the array at the midpoint. Cost: O(1).',
         conquer: 'Recursively find the max subarray sum in left and right halves.',
-        combine: 'Find the max crossing subarray (expanding from mid), then return the best of left, right, and crossing.'
+        combine: 'Find the max crossing subarray (expanding from mid), then return the best of left, right, and crossing. Cost: O(n).'
     },
     generateInput() {
         const n = 16;

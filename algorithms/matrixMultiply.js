@@ -15,11 +15,18 @@ AlgorithmLab.register({
     `,
     complexity: {
         recurrence: 'T(n) = 8T(n/2) + O(n²)',
-        time: 'O(n³)',
-        space: 'O(n² log n)',
-        divide: 'Partition each matrix into 4 quadrants (n/2 × n/2).',
+        recurrenceExplanation: '8 recursive multiplications of n/2×n/2 sub-matrices, O(n²) additions',
+        mastersTheorem: 'Case 1: a=8, b=2, log_b(a)=3 > 2 → Θ(n³)',
+        mastersExplanation: 'f(n)=n² = O(n^(log₂8−ε)) = O(n^(3−ε)), so Case 1 applies',
+        bestCase: 'Θ(n³)',
+        avgCase: 'Θ(n³)',
+        worstCase: 'Θ(n³)',
+        comparisons: 'n³ multiplications + n³−n² additions',
+        space: 'O(n² log n) — sub-matrix storage across recursion levels',
+        subproblems: '8 sub-multiplications of n/2 × n/2 matrices',
+        divide: 'Partition each matrix into 4 quadrants (n/2 × n/2). Cost: O(1).',
         conquer: 'Recursively multiply the 8 pairs of sub-matrices.',
-        combine: 'Add the products to form the 4 quadrants of the result.'
+        combine: 'Add the products to form the 4 quadrants of the result. Cost: O(n²).'
     },
     generateInput() {
         const n = 4;

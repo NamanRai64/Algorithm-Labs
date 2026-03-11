@@ -40,8 +40,15 @@ const AlgorithmLab = (() => {
         dom.speedSlider = $('speedSlider');
         dom.speedValue = $('speedValue');
         dom.recurrenceRelation = $('recurrenceRelation');
-        dom.timeComplexity = $('timeComplexity');
+        dom.recurrenceExplanation = $('recurrenceExplanation');
+        dom.mastersTheorem = $('mastersTheorem');
+        dom.mastersExplanation = $('mastersExplanation');
+        dom.bestCase = $('bestCase');
+        dom.avgCase = $('avgCase');
+        dom.worstCase = $('worstCase');
+        dom.numComparisons = $('numComparisons');
         dom.spaceComplexity = $('spaceComplexity');
+        dom.numSubproblems = $('numSubproblems');
         dom.divideText = $('divideText');
         dom.conquerText = $('conquerText');
         dom.combineText = $('combineText');
@@ -74,12 +81,20 @@ const AlgorithmLab = (() => {
         dom.algoDescription.innerHTML = algo.description;
 
         // Complexity info
-        dom.recurrenceRelation.textContent = algo.complexity.recurrence;
-        dom.timeComplexity.textContent = algo.complexity.time;
-        dom.spaceComplexity.textContent = algo.complexity.space;
-        dom.divideText.textContent = algo.complexity.divide;
-        dom.conquerText.textContent = algo.complexity.conquer;
-        dom.combineText.textContent = algo.complexity.combine;
+        const c = algo.complexity;
+        dom.recurrenceRelation.textContent = c.recurrence || '—';
+        dom.recurrenceExplanation.textContent = c.recurrenceExplanation || '';
+        dom.mastersTheorem.textContent = c.mastersTheorem || '—';
+        dom.mastersExplanation.textContent = c.mastersExplanation || '';
+        dom.bestCase.textContent = c.bestCase || c.time || '—';
+        dom.avgCase.textContent = c.avgCase || c.time || '—';
+        dom.worstCase.textContent = c.worstCase || c.time || '—';
+        dom.numComparisons.textContent = c.comparisons || '—';
+        dom.spaceComplexity.textContent = c.space || '—';
+        dom.numSubproblems.textContent = c.subproblems || '—';
+        dom.divideText.textContent = c.divide || '—';
+        dom.conquerText.textContent = c.conquer || '—';
+        dom.combineText.textContent = c.combine || '—';
 
         resetVisualization();
 

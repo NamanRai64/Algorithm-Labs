@@ -14,11 +14,18 @@ AlgorithmLab.register({
     `,
     complexity: {
         recurrence: 'T(n) = 2T(n/2) + O(n)',
-        time: 'O(n log n)',
-        space: 'O(n)',
-        divide: 'Sort points by x-coordinate and split at the median.',
+        recurrenceExplanation: '2 half-hulls + O(n) work to find tangent lines and merge',
+        mastersTheorem: 'Case 2: a=2, b=2, f(n)=n, log_b(a)=1 → Θ(n log n)',
+        mastersExplanation: 'f(n) = Θ(n^log_b(a)) = Θ(n¹), Case 2 applies',
+        bestCase: 'Θ(n log n)',
+        avgCase: 'Θ(n log n)',
+        worstCase: 'Θ(n log n)',
+        comparisons: 'O(n) cross-product comparisons per merge level × log n levels',
+        space: 'O(n) — hull vertex storage',
+        subproblems: '2 sub-hulls of n/2 points each',
+        divide: 'Sort points by x-coordinate and split at the median. Cost: O(n log n) initial sort.',
         conquer: 'Recursively compute the convex hull of left and right halves.',
-        combine: 'Merge the two hulls by finding upper and lower tangent lines.'
+        combine: 'Merge the two hulls by finding upper and lower tangent lines. Cost: O(n).'
     },
     generateInput() {
         const n = 30;

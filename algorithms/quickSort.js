@@ -14,11 +14,18 @@ AlgorithmLab.register({
     `,
     complexity: {
         recurrence: 'T(n) = T(k) + T(n−k−1) + O(n)',
-        time: 'O(n log n) avg · O(n²) worst',
-        space: 'O(log n)',
-        divide: 'Choose a pivot and partition into elements ≤ pivot and > pivot.',
+        recurrenceExplanation: 'k = pivot position; partition costs O(n)',
+        mastersTheorem: 'Not directly applicable (unequal subproblems)',
+        mastersExplanation: 'Best case gives T(n)=2T(n/2)+O(n) → Case 2 → O(n log n)',
+        bestCase: 'Ω(n log n) — balanced partitions',
+        avgCase: 'Θ(n log n) — expected with random pivots',
+        worstCase: 'O(n²) — already sorted / all equal',
+        comparisons: '~1.39 n log₂n average, n(n−1)/2 worst',
+        space: 'O(log n) — recursion stack depth',
+        subproblems: '2 subproblems of sizes k and n−k−1',
+        divide: 'Choose a pivot and partition into elements ≤ pivot and > pivot. Cost: O(n).',
         conquer: 'Recursively sort the left partition and the right partition.',
-        combine: 'No work needed — the array is sorted in-place after conquering.'
+        combine: 'No work needed — the array is sorted in-place after conquering. Cost: O(1).'
     },
     generateInput() {
         const n = 16;

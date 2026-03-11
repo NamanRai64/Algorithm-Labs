@@ -14,11 +14,18 @@ AlgorithmLab.register({
     `,
     complexity: {
         recurrence: 'T(n) = 2T(n/2) + O(n)',
-        time: 'O(n log n)',
-        space: 'O(n)',
-        divide: 'Split the array into two halves at the midpoint.',
+        recurrenceExplanation: '2 subproblems of size n/2, plus O(n) work to merge',
+        mastersTheorem: 'Case 2: a=2, b=2, f(n)=n, log_b(a)=1 → Θ(n log n)',
+        mastersExplanation: 'f(n) = Θ(n^log_b(a)) = Θ(n¹), so Case 2 applies',
+        bestCase: 'Ω(n log n)',
+        avgCase: 'Θ(n log n)',
+        worstCase: 'O(n log n)',
+        comparisons: 'n⌈log₂n⌉ − 2^⌈log₂n⌉ + 1 ≈ O(n log n)',
+        space: 'O(n) — auxiliary array for merging',
+        subproblems: '2 subproblems of size n/2 at each level',
+        divide: 'Split the array into two halves at the midpoint. Cost: O(1).',
         conquer: 'Recursively sort the left half and the right half.',
-        combine: 'Merge the two sorted halves by comparing elements in order.'
+        combine: 'Merge the two sorted halves by comparing elements in order. Cost: O(n).'
     },
     generateInput() {
         const n = 16;

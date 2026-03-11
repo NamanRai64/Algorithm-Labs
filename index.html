@@ -177,23 +177,52 @@
             <!-- Complexity Panel -->
             <section class="panel complexity-panel" id="complexityPanel">
                 <div class="panel-header">
-                    <h2 class="panel-title">Time Complexity Analysis</h2>
+                    <h2 class="panel-title">⏱ Time Complexity Analysis</h2>
                 </div>
                 <div class="panel-body complexity-body">
-                    <div class="complexity-card" id="recurrenceCard">
-                        <div class="complexity-card-label">Recurrence Relation</div>
-                        <div class="complexity-card-value" id="recurrenceRelation">—</div>
+                    <!-- Row 1: Recurrence + Master's Theorem -->
+                    <div class="complexity-card accent-cyan">
+                        <div class="complexity-card-label">📐 Recurrence Relation</div>
+                        <div class="complexity-card-value mono" id="recurrenceRelation">—</div>
+                        <div class="complexity-card-sub" id="recurrenceExplanation"></div>
                     </div>
-                    <div class="complexity-card" id="timeCard">
-                        <div class="complexity-card-label">Time Complexity</div>
-                        <div class="complexity-card-value" id="timeComplexity">—</div>
+                    <div class="complexity-card accent-purple">
+                        <div class="complexity-card-label">📊 Master's Theorem</div>
+                        <div class="complexity-card-value mono" id="mastersTheorem">—</div>
+                        <div class="complexity-card-sub" id="mastersExplanation"></div>
                     </div>
-                    <div class="complexity-card" id="spaceCard">
-                        <div class="complexity-card-label">Space Complexity</div>
-                        <div class="complexity-card-value" id="spaceComplexity">—</div>
+
+                    <!-- Row 2: Best / Average / Worst Time -->
+                    <div class="complexity-card accent-emerald">
+                        <div class="complexity-card-label">🟢 Best Case</div>
+                        <div class="complexity-card-value mono" id="bestCase">—</div>
                     </div>
-                    <div class="complexity-card wide" id="stepsCard">
-                        <div class="complexity-card-label">Divide, Conquer & Combine</div>
+                    <div class="complexity-card accent-amber">
+                        <div class="complexity-card-label">🟡 Average Case</div>
+                        <div class="complexity-card-value mono" id="avgCase">—</div>
+                    </div>
+                    <div class="complexity-card accent-rose">
+                        <div class="complexity-card-label">🔴 Worst Case</div>
+                        <div class="complexity-card-value mono" id="worstCase">—</div>
+                    </div>
+
+                    <!-- Row 3: Comparisons + Space -->
+                    <div class="complexity-card accent-cyan">
+                        <div class="complexity-card-label">🔢 Number of Comparisons</div>
+                        <div class="complexity-card-value mono" id="numComparisons">—</div>
+                    </div>
+                    <div class="complexity-card accent-purple">
+                        <div class="complexity-card-label">💾 Space Complexity</div>
+                        <div class="complexity-card-value mono" id="spaceComplexity">—</div>
+                    </div>
+                    <div class="complexity-card accent-emerald">
+                        <div class="complexity-card-label">🔁 Number of Subproblems</div>
+                        <div class="complexity-card-value mono" id="numSubproblems">—</div>
+                    </div>
+
+                    <!-- Row 4: Divide / Conquer / Combine -->
+                    <div class="complexity-card wide">
+                        <div class="complexity-card-label">⚙️ Divide, Conquer & Combine Steps</div>
                         <div class="complexity-steps" id="complexitySteps">
                             <div class="dc-step">
                                 <span class="dc-badge divide">Divide</span>
