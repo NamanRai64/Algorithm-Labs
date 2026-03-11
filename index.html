@@ -103,6 +103,9 @@
             <div class="topbar-info">
                 <h1 class="algo-title" id="algoTitle">Merge Sort</h1>
                 <span class="algo-badge" id="algoBadge">Sorting</span>
+                <button class="compare-mode-btn" id="btnCompareMode" style="display:none;" title="Compare algorithms side-by-side">
+                    ⚖️ Compare Mode
+                </button>
             </div>
             <div class="topbar-shortcuts">
                 <kbd>Space</kbd> Play/Pause
@@ -156,6 +159,23 @@
                     </div>
                     <canvas id="vizCanvas" width="800" height="400" style="display:none;"></canvas>
                     <div id="vizDOM" class="viz-dom"></div>
+                    
+                    <div id="compareDOM" class="compare-dom" style="display:none;">
+                        <div class="compare-pane">
+                            <div class="compare-header">
+                                <span class="compare-title" id="compareTitle1">Algo 1</span>
+                                <span class="compare-sub" id="comparePhase1">READY</span>
+                            </div>
+                            <div id="vizDOM1" class="viz-dom compare-viz"></div>
+                        </div>
+                        <div class="compare-pane">
+                            <div class="compare-header">
+                                <span class="compare-title" id="compareTitle2">Algo 2</span>
+                                <span class="compare-sub" id="comparePhase2">READY</span>
+                            </div>
+                            <div id="vizDOM2" class="viz-dom compare-viz"></div>
+                        </div>
+                    </div>
                 </div>
                 <div class="step-explanation" id="stepExplanation">
                     <span class="explanation-label">Current Step:</span>
