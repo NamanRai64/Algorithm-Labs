@@ -28,6 +28,18 @@ AlgorithmLab.register({
         conquer: 'Recursively multiply the 8 pairs of sub-matrices.',
         combine: 'Add the products to form the 4 quadrants of the result. Cost: O(n²).'
     },
+    pseudocode: [
+        'function MATRIX-MULTIPLY(A, B, n)',
+        '  if n == 1 then',
+        '    return A[1,1] × B[1,1]',
+        '  Partition A into A₁₁, A₁₂, A₂₁, A₂₂',
+        '  Partition B into B₁₁, B₁₂, B₂₁, B₂₂',
+        '  C₁₁ = MATRIX-MULTIPLY(A₁₁,B₁₁) + MATRIX-MULTIPLY(A₁₂,B₂₁)',
+        '  C₁₂ = MATRIX-MULTIPLY(A₁₁,B₁₂) + MATRIX-MULTIPLY(A₁₂,B₂₂)',
+        '  C₂₁ = MATRIX-MULTIPLY(A₂₁,B₁₁) + MATRIX-MULTIPLY(A₂₂,B₂₁)',
+        '  C₂₂ = MATRIX-MULTIPLY(A₂₁,B₁₂) + MATRIX-MULTIPLY(A₂₂,B₂₂)',
+        '  return C combined from C₁₁, C₁₂, C₂₁, C₂₂'
+    ].join('\n'),
     generateInput() {
         const n = 4;
         const randMat = () => Array.from({ length: n }, () =>

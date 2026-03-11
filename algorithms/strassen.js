@@ -27,6 +27,24 @@ AlgorithmLab.register({
         conquer: 'Compute 7 special products M₁ through M₇ recursively.',
         combine: 'Reconstruct the 4 quadrants of C from M₁–M₇ using additions and subtractions. Cost: O(n²).'
     },
+    pseudocode: [
+        'function STRASSEN(A, B, n)',
+        '  if n == 1 then return A × B',
+        '  Partition A → A₁₁,A₁₂,A₂₁,A₂₂',
+        '  Partition B → B₁₁,B₁₂,B₂₁,B₂₂',
+        '  M₁ = STRASSEN(A₁₁+A₂₂, B₁₁+B₂₂)',
+        '  M₂ = STRASSEN(A₂₁+A₂₂, B₁₁)',
+        '  M₃ = STRASSEN(A₁₁, B₁₂−B₂₂)',
+        '  M₄ = STRASSEN(A₂₂, B₂₁−B₁₁)',
+        '  M₅ = STRASSEN(A₁₁+A₁₂, B₂₂)',
+        '  M₆ = STRASSEN(A₂₁−A₁₁, B₁₁+B₁₂)',
+        '  M₇ = STRASSEN(A₁₂−A₂₂, B₂₁+B₂₂)',
+        '  C₁₁ = M₁ + M₄ − M₅ + M₇',
+        '  C₁₂ = M₃ + M₅',
+        '  C₂₁ = M₂ + M₄',
+        '  C₂₂ = M₁ − M₂ + M₃ + M₆',
+        '  return C'
+    ].join('\n'),
     generateInput() {
         const n = 4;
         const randMat = () => Array.from({ length: n }, () =>

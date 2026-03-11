@@ -27,6 +27,27 @@ AlgorithmLab.register({
         conquer: 'Recursively find the max subarray sum in left and right halves.',
         combine: 'Find the max crossing subarray (expanding from mid), then return the best of left, right, and crossing. Cost: O(n).'
     },
+    pseudocode: [
+        'function MAX-SUBARRAY(A, lo, hi)',
+        '  if lo == hi then',
+        '    return (lo, hi, A[lo])',
+        '  mid = ⌊(lo + hi) / 2⌋',
+        '  (lLo, lHi, lSum) = MAX-SUBARRAY(A, lo, mid)',
+        '  (rLo, rHi, rSum) = MAX-SUBARRAY(A, mid+1, hi)',
+        '  (cLo, cHi, cSum) = MAX-CROSSING(A, lo, mid, hi)',
+        '  return max of (lSum, rSum, cSum)',
+        '',
+        'function MAX-CROSSING(A, lo, mid, hi)',
+        '  leftSum = -∞, sum = 0',
+        '  for i = mid downto lo do',
+        '    sum += A[i]',
+        '    if sum > leftSum then leftSum = sum',
+        '  rightSum = -∞, sum = 0',
+        '  for j = mid+1 to hi do',
+        '    sum += A[j]',
+        '    if sum > rightSum then rightSum = sum',
+        '  return leftSum + rightSum'
+    ].join('\n'),
     generateInput() {
         const n = 16;
         return Array.from({ length: n }, () => Math.floor(Math.random() * 41) - 20);
