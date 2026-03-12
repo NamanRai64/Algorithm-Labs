@@ -226,6 +226,16 @@ const AlgorithmLab = (() => {
         updatePseudocode(algo);
         updateComparisonHighlight(id);
 
+        // Compare Mode Visibility
+        const categoryAlgos = Object.values(algorithms).filter(a => a.category === algo.category);
+        if (categoryAlgos.length > 1 && !algo.usesCanvas) {
+            dom.btnCompareMode.style.display = 'inline-flex';
+        } else {
+            dom.btnCompareMode.style.display = 'none';
+        }
+        compareMode = false;
+        dom.btnCompareMode.classList.remove('active');
+
         resetVisualization();
         dom.sidebar.classList.remove('open');
     }
