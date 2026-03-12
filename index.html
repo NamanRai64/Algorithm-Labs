@@ -1,32 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Interactive visualizer for Divide and Conquer algorithms with step-by-step animations and time complexity analysis.">
+    <meta name="description"
+        content="Interactive visualizer for Divide and Conquer algorithms with step-by-step animations and time complexity analysis.">
     <title>AlgorithmLab — Divide & Conquer Visualizer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="logo">
                 <svg class="logo-icon" viewBox="0 0 32 32" fill="none">
-                    <rect x="2" y="2" width="28" height="28" rx="6" stroke="url(#logoGrad)" stroke-width="2.5"/>
-                    <line x1="16" y1="6" x2="16" y2="26" stroke="url(#logoGrad)" stroke-width="1.5" stroke-dasharray="2 2"/>
-                    <line x1="6" y1="16" x2="26" y2="16" stroke="url(#logoGrad)" stroke-width="1.5" stroke-dasharray="2 2"/>
-                    <circle cx="10" cy="10" r="3" fill="url(#logoGrad)" opacity="0.8"/>
-                    <circle cx="22" cy="10" r="3" fill="url(#logoGrad)" opacity="0.6"/>
-                    <circle cx="10" cy="22" r="3" fill="url(#logoGrad)" opacity="0.6"/>
-                    <circle cx="22" cy="22" r="3" fill="url(#logoGrad)" opacity="0.8"/>
+                    <rect x="2" y="2" width="28" height="28" rx="6" stroke="url(#logoGrad)" stroke-width="2.5" />
+                    <line x1="16" y1="6" x2="16" y2="26" stroke="url(#logoGrad)" stroke-width="1.5"
+                        stroke-dasharray="2 2" />
+                    <line x1="6" y1="16" x2="26" y2="16" stroke="url(#logoGrad)" stroke-width="1.5"
+                        stroke-dasharray="2 2" />
+                    <circle cx="10" cy="10" r="3" fill="url(#logoGrad)" opacity="0.8" />
+                    <circle cx="22" cy="10" r="3" fill="url(#logoGrad)" opacity="0.6" />
+                    <circle cx="10" cy="22" r="3" fill="url(#logoGrad)" opacity="0.6" />
+                    <circle cx="22" cy="22" r="3" fill="url(#logoGrad)" opacity="0.8" />
                     <defs>
                         <linearGradient id="logoGrad" x1="0" y1="0" x2="32" y2="32">
-                            <stop offset="0%" stop-color="#06b6d4"/>
-                            <stop offset="100%" stop-color="#8b5cf6"/>
+                            <stop offset="0%" stop-color="#06b6d4" />
+                            <stop offset="100%" stop-color="#8b5cf6" />
                         </linearGradient>
                     </defs>
                 </svg>
@@ -111,7 +118,8 @@
             <div class="topbar-info">
                 <h1 class="algo-title" id="algoTitle">Merge Sort</h1>
                 <span class="algo-badge" id="algoBadge">Sorting</span>
-                <button class="compare-mode-btn" id="btnCompareMode" style="display:none;" title="Compare algorithms side-by-side">
+                <button class="compare-mode-btn" id="btnCompareMode" style="display:none;"
+                    title="Compare algorithms side-by-side">
                     ⚖️ Compare Mode
                 </button>
             </div>
@@ -125,12 +133,13 @@
 
         <!-- Content Area -->
         <div class="content-area">
-            
+
             <!-- Home Dashboard -->
             <section class="home-panel" id="homePanel">
                 <div class="home-hero">
                     <h2 class="home-title">Divide & Conquer Visualizer</h2>
-                    <p class="home-subtitle">Interactive algorithm lab for step-by-step learning and complexity analysis.</p>
+                    <p class="home-subtitle">Interactive algorithm lab for step-by-step learning and complexity
+                        analysis.</p>
                 </div>
                 <div class="algo-grid" id="algoGrid">
                     <!-- Sorting -->
@@ -148,7 +157,7 @@
                         <h4>Quick Sort</h4>
                         <p>Pivot-based partitioning and sorting.</p>
                     </div>
-                    
+
                     <!-- Matrix -->
                     <div class="algo-card" data-algo="matrixMultiply">
                         <div class="icon-wrap matrix">▦</div>
@@ -201,6 +210,43 @@
 
 
 
+            <!-- Unified Details Section (Description & Pseudocode) -->
+            <section class="panel details-panel" id="detailsPanel">
+                <div class="panel-header">
+                    <h2 class="panel-title">📚 Algorithm Reference</h2>
+                </div>
+
+                <div class="details-accordion">
+                    <!-- Overview subsection -->
+                    <div class="accordion-item">
+                        <div class="accordion-header" id="toggleDescription">
+                            <span>📖 Overview</span>
+                            <svg class="chevron" viewBox="0 0 24 24" width="16" height="16" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9" />
+                            </svg>
+                        </div>
+                        <div class="accordion-body" id="descriptionBody">
+                            <div class="panel-body" id="algoDescription"></div>
+                        </div>
+                    </div>
+
+                    <!-- Pseudocode subsection -->
+                    <div class="accordion-item">
+                        <div class="accordion-header" id="toggleImplementation">
+                            <span>📝 Pseudocode</span>
+                            <svg class="chevron" viewBox="0 0 24 24" width="16" height="16" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9" />
+                            </svg>
+                        </div>
+                        <div class="accordion-body collapsed" id="pseudocodeBody">
+                            <pre class="pseudocode" id="pseudocodeContent"></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Visualization Area -->
             <section class="panel viz-panel" id="vizPanel">
                 <div class="panel-header">
@@ -213,10 +259,7 @@
                 <div class="progress-bar-container">
                     <div class="progress-bar" id="progressBar" style="width: 0%"></div>
                 </div>
-                <!-- Above visualization description -->
-                <div class="viz-info-overlay" id="vizInfoOverlay">
-                    <p id="topDescription">Select an algorithm to see its description here.</p>
-                </div>
+
                 <div class="viz-container" id="vizContainer">
                     <!-- Algorithm visualization rendered here -->
                     <div class="viz-placeholder" id="vizPlaceholder">
@@ -224,7 +267,7 @@
                     </div>
                     <canvas id="vizCanvas" width="800" height="400" style="display:none;"></canvas>
                     <div id="vizDOM" class="viz-dom"></div>
-                    
+
                     <div id="compareDOM" class="compare-dom" style="display:none;">
                         <div class="compare-pane">
                             <div class="compare-header">
@@ -246,69 +289,75 @@
                     <span class="explanation-label">Current Step:</span>
                     <span class="explanation-text" id="explanationText">Click Play to begin the visualization.</span>
                 </div>
-            <!-- Unified Details Section (Description & Pseudocode) -->
-            <section class="panel details-panel" id="detailsPanel">
-                <div class="panel-header">
-                    <h2 class="panel-title">📚 Algorithm Reference</h2>
-                </div>
-                
-                <div class="details-accordion">
-                    <!-- Overview subsection -->
-                    <div class="accordion-item">
-                        <div class="accordion-header" id="toggleDescription">
-                            <span>📖 Overview</span>
-                            <svg class="chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-                        </div>
-                        <div class="accordion-body" id="descriptionBody">
-                            <div class="panel-body" id="algoDescription"></div>
-                        </div>
-                    </div>
-
-                    <!-- Pseudocode subsection -->
-                    <div class="accordion-item">
-                        <div class="accordion-header" id="toggleImplementation">
-                            <span>📝 Pseudocode</span>
-                            <svg class="chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-                        </div>
-                        <div class="accordion-body collapsed" id="pseudocodeBody">
-                            <pre class="pseudocode" id="pseudocodeContent"></pre>
-                        </div>
-                    </div>
-                </div>
             </section>
 
             <!-- Controls Bar -->
             <section class="controls-bar" id="controlsBar">
                 <div class="controls-left">
                     <button class="ctrl-btn" id="btnReset" title="Reset">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M1 4v6h6" />
+                            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+                        </svg>
                         <span>Reset</span>
                     </button>
                     <button class="ctrl-btn" id="btnStepBack" title="Step Back">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/></svg>
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="11 17 6 12 11 7" />
+                            <polyline points="18 17 13 12 18 7" />
+                        </svg>
                         <span>Back</span>
                     </button>
                     <button class="ctrl-btn primary" id="btnPlay" title="Play / Pause">
-                        <svg id="iconPlay" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                        <svg id="iconPause" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" style="display:none;"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                        <svg id="iconPlay" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                            <polygon points="5 3 19 12 5 21 5 3" />
+                        </svg>
+                        <svg id="iconPause" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"
+                            style="display:none;">
+                            <rect x="6" y="4" width="4" height="16" />
+                            <rect x="14" y="4" width="4" height="16" />
+                        </svg>
                     </button>
                     <button class="ctrl-btn" id="btnStep" title="Step Forward">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg>
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="13 17 18 12 13 7" />
+                            <polyline points="6 17 11 12 6 7" />
+                        </svg>
                         <span>Step</span>
                     </button>
                     <button class="ctrl-btn" id="btnNewInput" title="New Random Input">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.78 7.78 5.5 5.5 0 0 1 7.78-7.78zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.78 7.78 5.5 5.5 0 0 1 7.78-7.78zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" />
+                        </svg>
                         <span>Random</span>
                     </button>
                     <button class="ctrl-btn" id="btnCustomInput" title="Enter Custom Input">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg>
                         <span>Custom</span>
                     </button>
                 </div>
                 <div class="controls-right">
                     <button class="ctrl-btn" id="btnSound" title="Toggle Sound">
-                        <svg id="iconSoundOn" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-                        <svg id="iconSoundOff" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+                        <svg id="iconSoundOn" viewBox="0 0 24 24" width="18" height="18" fill="none"
+                            stroke="currentColor" stroke-width="2" style="display:none;">
+                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
+                        </svg>
+                        <svg id="iconSoundOff" viewBox="0 0 24 24" width="18" height="18" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                            <line x1="23" y1="9" x2="17" y2="15" />
+                            <line x1="17" y1="9" x2="23" y2="15" />
+                        </svg>
                     </button>
                     <label class="speed-control">
                         <span class="speed-label">Speed</span>
@@ -318,20 +367,7 @@
                 </div>
             </section>
 
-            <!-- Execution Log Panel -->
-            <section class="panel execution-panel" id="executionPanel">
-                <div class="panel-header">
-                    <h2 class="panel-title">📜 Execution Log</h2>
-                    <button class="toggle-btn" id="toggleLog" title="Toggle execution log">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-                    </button>
-                </div>
-                <div class="log-body" id="logBody">
-                    <div class="log-list" id="logList">
-                        <!-- Log items added here -->
-                    </div>
-                </div>
-            </section>
+
 
             <!-- Complexity Panel -->
             <section class="panel complexity-panel" id="complexityPanel">
@@ -405,7 +441,10 @@
                 <div class="panel-header">
                     <h2 class="panel-title">📊 Algorithm Comparison</h2>
                     <button class="toggle-btn" id="toggleComparison" title="Toggle comparison table">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="6 9 12 15 18 9" />
+                        </svg>
                     </button>
                 </div>
                 <div class="comparison-body" id="comparisonBody">
@@ -440,7 +479,8 @@
             </div>
             <div class="modal-body">
                 <p class="modal-hint" id="modalHint">Enter comma-separated numbers:</p>
-                <textarea class="modal-input" id="modalInput" rows="3" placeholder="e.g. 38, 27, 43, 3, 9, 82, 10"></textarea>
+                <textarea class="modal-input" id="modalInput" rows="3"
+                    placeholder="e.g. 38, 27, 43, 3, 9, 82, 10"></textarea>
             </div>
             <div class="modal-footer">
                 <button class="ctrl-btn" id="modalCancel">Cancel</button>
@@ -460,4 +500,5 @@
     <script src="algorithms/closestPair.js"></script>
     <script src="algorithms/convexHull.js"></script>
 </body>
+
 </html>
