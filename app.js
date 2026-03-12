@@ -29,7 +29,7 @@ const AlgorithmLab = (() => {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = type;
-        
+
         const minFreq = 150;
         const maxFreq = 900;
         const val = typeof value === 'number' ? Math.abs(value) : 50;
@@ -53,40 +53,6 @@ const AlgorithmLab = (() => {
         }
         dom.iconSoundOn.style.display = soundEnabled ? 'block' : 'none';
         dom.iconSoundOff.style.display = soundEnabled ? 'none' : 'block';
-    }
-
-    // ── Execution Log ──
-    function appendLogEntry(stepData, index) {
-        if (compareMode || !dom.logList) return;
-        
-        // Remove active from previous
-        const existing = dom.logList.querySelectorAll('.log-item');
-        
-        // Find if this step already logged (happens on rewind/fast forward)
-        // the easiest way is just to clear the list if we jump backwards, or just rebuild it up to index
-        
-        // Build html
-        const phaseClass = stepData.phase || 'ready';
-        const template = `
-            <div class="log-item ${phaseClass}" id="log-step-${index}">
-                <div class="log-step-num">[Step ${index + 1}]</div>
-                <div class="log-text">${stepData.explanation || ''}</div>
-            </div>
-        `;
-        dom.logList.insertAdjacentHTML('beforeend', template);
-        
-        const newlyAdded = dom.logList.lastElementChild;
-        if (newlyAdded) {
-            newlyAdded.scrollIntoView({ behavior: 'smooth', block: 'end' });
-        }
-    }
-
-    function rebuildLog() {
-        if (compareMode || !dom.logList) return;
-        dom.logList.innerHTML = '';
-        for (let i = 0; i <= stepIndex; i++) {
-            if (steps[i]) appendLogEntry(steps[i], i);
-        }
     }
 
     // ── DOM refs ──
@@ -129,22 +95,17 @@ const AlgorithmLab = (() => {
         dom.divideText = $('divideText');
         dom.conquerText = $('conquerText');
         dom.combineText = $('combineText');
-        dom.divideText = $('divideText');
-        dom.conquerText = $('conquerText');
-        dom.combineText = $('combineText');
-        
-        // Panels
+
         dom.homePanel = $('homePanel');
-        dom.descriptionPanel = $('descriptionPanel');
-        dom.pseudocodePanel = $('pseudocodePanel');
         dom.vizPanel = $('vizPanel');
-        dom.complexityPanel = Math.random() ? document.querySelector('.panel:nth-of-type(5)') : document.querySelector('.panel'); // The complexity panel doesn't have an ID but we can toggle them all. Actually, let's cache them by IDs if we had them, OR just toggle `.panel` vs `.home-panel`. Wait, there's no ID on the complexity panel. We can just use queries.
-        
-        // New feature DOM refs
+        dom.detailsPanel = $('detailsPanel');
+        dom.controlsBar = $('controlsBar');
+        dom.complexityPanel = $('complexityPanel');
+        dom.comparisonPanel = $('comparisonPanel');
+
         dom.progressBar = $('progressBar');
         dom.pseudocodeContent = $('pseudocodeContent');
         dom.pseudocodeBody = $('pseudocodeBody');
-        dom.togglePseudocode = $('togglePseudocode');
         dom.comparisonTableBody = $('comparisonTableBody');
         dom.comparisonBody = $('comparisonBody');
         dom.toggleComparison = $('toggleComparison');
@@ -165,14 +126,13 @@ const AlgorithmLab = (() => {
         dom.comparePhase1 = $('comparePhase1');
         dom.comparePhase2 = $('comparePhase2');
 
-        // New feature DOM refs
         dom.btnSound = $('btnSound');
         dom.iconSoundOn = $('iconSoundOn');
         dom.iconSoundOff = $('iconSoundOff');
-        dom.executionPanel = $('executionPanel');
-        dom.toggleLog = $('toggleLog');
-        dom.logBody = $('logBody');
-        dom.logList = $('logList');
+        dom.algoGrid = $('algoGrid');
+        dom.toggleDescription = $('toggleDescription');
+        dom.descriptionBody = $('descriptionBody');
+        dom.toggleImplementation = $('toggleImplementation');
     }
 
     // ── Registration ──
@@ -183,29 +143,27 @@ const AlgorithmLab = (() => {
     // ── Switch Algorithm ──
     function switchTo(id) {
         stop();
-        
+
         // --- Home View Logic --- //
         if (id === 'home') {
             currentAlgo = null;
-            // Update nav
             dom.sidebarNav.querySelectorAll('.nav-item').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.algo === 'home');
             });
             dom.algoTitle.textContent = 'Dashboard';
             dom.algoBadge.style.display = 'none';
             dom.btnCompareMode.style.display = 'none';
-            $('topbar').querySelector('.topbar-shortcuts').style.display = 'none';
-            
-            // Show / Hide Panels
-            dom.homePanel.style.display = 'block';
-            document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
-            // Hide comparison table and execution log
-            if(dom.comparisonTableBody && dom.comparisonTableBody.closest) {
-                const p = dom.comparisonTableBody.closest('.panel');
-                if(p) p.style.display = 'none';
+            if ($('topbar').querySelector('.topbar-shortcuts')) {
+                $('topbar').querySelector('.topbar-shortcuts').style.display = 'none';
             }
-            if(dom.executionPanel) dom.executionPanel.style.display = 'none';
-            
+
+            dom.homePanel.style.display = 'block';
+            dom.vizPanel.style.display = 'none';
+            dom.detailsPanel.style.display = 'none';
+            dom.controlsBar.style.display = 'none';
+            dom.complexityPanel.style.display = 'none';
+            dom.comparisonPanel.style.display = 'none';
+
             dom.sidebar.classList.remove('open');
             return;
         }
@@ -215,28 +173,40 @@ const AlgorithmLab = (() => {
         if (!algo) return;
         currentAlgo = algo;
 
-        // Show all panels again
+        // Force panels to display (Overriding CSS display: none)
         dom.homePanel.style.display = 'none';
-        document.querySelectorAll('.panel').forEach(p => p.style.display = 'block');
-        // Comparison panel is a panel so it's shown.
+        dom.vizPanel.style.display = 'block';
+        dom.detailsPanel.style.display = 'block';
+        dom.controlsBar.style.display = 'flex';
+        dom.complexityPanel.style.display = 'block';
+        dom.comparisonPanel.style.display = 'block';
+
         dom.algoBadge.style.display = 'inline-block';
-        $('topbar').querySelector('.topbar-shortcuts').style.display = 'block';
+        if ($('topbar').querySelector('.topbar-shortcuts')) {
+            $('topbar').querySelector('.topbar-shortcuts').style.display = 'block';
+        }
+
+        // Reset Accordion: Force Overview and Implementation to be open by default
+        if (dom.descriptionBody) dom.descriptionBody.classList.remove('collapsed');
+        if (dom.toggleDescription) dom.toggleDescription.classList.remove('collapsed');
+        if (dom.pseudocodeBody) dom.pseudocodeBody.classList.remove('collapsed');
+        if (dom.toggleImplementation) dom.toggleImplementation.classList.remove('collapsed');
 
         // Update nav
         dom.sidebarNav.querySelectorAll('.nav-item').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.algo === id);
         });
 
-        // Update header
+        // Update header & badge
         dom.algoTitle.textContent = algo.name;
         const badgeClasses = { Sorting: '', Matrix: 'matrix', 'Search & Optimization': 'search', Geometry: 'geometry' };
         dom.algoBadge.className = 'algo-badge ' + (badgeClasses[algo.category] || '');
         dom.algoBadge.textContent = algo.category;
 
-        // Description
+        // Details (Description)
         dom.algoDescription.innerHTML = algo.description;
 
-        // Complexity info
+        // Update Complexity info
         const c = algo.complexity;
         dom.recurrenceRelation.textContent = c.recurrence || '—';
         dom.recurrenceExplanation.textContent = c.recurrenceExplanation || '';
@@ -252,24 +222,11 @@ const AlgorithmLab = (() => {
         dom.conquerText.textContent = c.conquer || '—';
         dom.combineText.textContent = c.combine || '—';
 
-        // Pseudocode
+        // Pseudocode & Table
         updatePseudocode(algo);
-
-        // Comparison table highlight
         updateComparisonHighlight(id);
 
-        const categoryAlgos = Object.values(algorithms).filter(a => a.category === algo.category);
-        if (categoryAlgos.length > 1 && !algo.usesCanvas) {
-            dom.btnCompareMode.style.display = 'inline-flex';
-        } else {
-            dom.btnCompareMode.style.display = 'none';
-        }
-        compareMode = false;
-        dom.btnCompareMode.classList.remove('active');
-
         resetVisualization();
-
-        // Close sidebar on mobile
         dom.sidebar.classList.remove('open');
     }
 
@@ -296,33 +253,32 @@ const AlgorithmLab = (() => {
         dom.explanationText.textContent = 'Click Play to begin the visualization.';
         dom.progressBar.style.width = '0%';
         updatePlayIcon();
-        if (dom.logList) dom.logList.innerHTML = '';
     }
 
     function generateAndRun(customInput = null) {
         if (!currentAlgo) return;
         const input = customInput || currentAlgo.generateInput();
-        
+
         if (compareMode) {
             const categoryAlgos = Object.values(algorithms).filter(a => a.category === currentAlgo.category);
             algo1 = currentAlgo;
             algo2 = categoryAlgos.find(a => a.id !== currentAlgo.id) || currentAlgo;
-            
+
             const inputCopy = JSON.parse(JSON.stringify(input));
             steps1 = algo1.customRun ? algo1.customRun(input) : algo1.run(input);
             steps2 = algo2.customRun ? algo2.customRun(inputCopy) : algo2.run(inputCopy);
-            
+
             steps = new Array(Math.max(steps1.length, steps2.length));
             stepIndex = -1;
-            
+
             dom.vizPlaceholder.style.display = 'none';
             dom.vizCanvas.style.display = 'none';
             dom.vizDOM.style.display = 'none';
             dom.compareDOM.style.display = 'flex';
-            
+
             dom.compareTitle1.textContent = algo1.name;
             dom.compareTitle2.textContent = algo2.name;
-            
+
             if (steps.length > 0) {
                 stepIndex = 0;
                 renderStep();
@@ -332,7 +288,7 @@ const AlgorithmLab = (() => {
             stepIndex = -1;
             dom.vizPlaceholder.style.display = 'none';
             dom.compareDOM.style.display = 'none';
-    
+
             if (currentAlgo.usesCanvas) {
                 dom.vizCanvas.style.display = 'block';
                 dom.vizDOM.style.display = 'none';
@@ -341,7 +297,7 @@ const AlgorithmLab = (() => {
                 dom.vizCanvas.style.display = 'none';
                 dom.vizDOM.style.display = 'flex';
             }
-    
+
             if (steps.length > 0) {
                 stepIndex = 0;
                 renderStep();
@@ -362,59 +318,52 @@ const AlgorithmLab = (() => {
             const t2 = steps2.length;
             const max = Math.max(t1, t2);
             if (stepIndex < 0 || stepIndex >= max) return;
-            
+
             dom.stepCounter.textContent = `Step ${stepIndex + 1} / ${max}`;
             dom.explanationText.textContent = `Comparing execution of ${algo1.name} and ${algo2.name}...`;
             dom.progressBar.style.width = max > 0 ? ((stepIndex + 1) / max) * 100 + '%' : '0%';
             dom.stepPhase.textContent = 'Comparing';
             dom.stepPhase.className = 'step-phase';
-            
+
             const i1 = Math.min(stepIndex, t1 - 1);
             const s1 = steps1[i1];
             dom.comparePhase1.textContent = (s1.phase || 'ready').toUpperCase() + ` | Step: ${i1 + 1}/${t1}`;
             dom.comparePhase1.className = 'compare-sub ' + (s1.phase || '');
             algo1.render(s1, dom.vizDOM1);
-            
+
             const i2 = Math.min(stepIndex, t2 - 1);
             const s2 = steps2[i2];
             dom.comparePhase2.textContent = (s2.phase || 'ready').toUpperCase() + ` | Step: ${i2 + 1}/${t2}`;
             dom.comparePhase2.className = 'compare-sub ' + (s2.phase || '');
             algo2.render(s2, dom.vizDOM2);
-            
+
             highlightPseudocodeLine(-1);
-            
+
         } else {
             if (!currentAlgo || stepIndex < 0 || stepIndex >= steps.length) return;
             const step = steps[stepIndex];
-    
+
             dom.stepCounter.textContent = `Step ${stepIndex + 1} / ${steps.length}`;
             dom.explanationText.textContent = step.explanation || '';
-    
+
             const pct = steps.length > 0 ? ((stepIndex + 1) / steps.length) * 100 : 0;
             dom.progressBar.style.width = pct + '%';
-    
+
             const phase = step.phase || 'ready';
             dom.stepPhase.textContent = phase.charAt(0).toUpperCase() + phase.slice(1);
             dom.stepPhase.className = 'step-phase ' + phase;
-    
-            highlightPseudocodeLine(step.codeLine || -1);
-            
-            // Rebuild log up to this step
-            rebuildLog();
 
-            // Sound logic
+            highlightPseudocodeLine(step.codeLine || -1);
+
             if (soundEnabled && !compareMode) {
                 let valForSound = 50;
                 if (currentAlgo.category === 'Sorting') {
                     const hlIndex = Object.keys(step.highlights || {}).find(k => step.highlights[k] === 'active' || step.highlights[k] === 'swap');
                     if (hlIndex !== undefined && step.array) valForSound = step.array[hlIndex];
-                } else if (currentAlgo.category === 'Search & Optimization') {
-                    const hlIndex = Object.keys(step.highlights || {}).find(k => step.highlights[k] === 'active' || step.highlights[k] === 'mid');
-                    if (hlIndex !== undefined && step.array) valForSound = step.array[hlIndex];
                 }
                 playTone(valForSound, 'triangle', Math.min(speedMs / 1000, 0.2));
             }
-    
+
             if (currentAlgo.usesCanvas) {
                 const ctx = dom.vizCanvas.getContext('2d');
                 currentAlgo.render(step, ctx, dom.vizCanvas);
@@ -489,13 +438,10 @@ const AlgorithmLab = (() => {
 
     function updateSpeed() {
         const val = parseInt(dom.speedSlider.value);
-        // 1 = slowest (1200ms), 10 = fastest (50ms)
         speedMs = Math.round(1200 / val);
         const label = val <= 3 ? '0.5×' : val <= 6 ? '1×' : val <= 8 ? '2×' : '3×';
         dom.speedValue.textContent = label;
     }
-
-    // ── Helpers shared by algorithms ──
 
     function renderBarChart(container, arr, highlights = {}, maxVal = null) {
         const mx = maxVal || Math.max(...arr, 1);
@@ -529,7 +475,6 @@ const AlgorithmLab = (() => {
     }
 
     function renderMatrixViz(container, data) {
-        // data: { blocks: [{ label, matrix, highlights }], operators: ['+', '×', '='] }
         let html = '<div class="matrix-viz">';
         html += '<div class="matrix-row-display">';
         data.blocks.forEach((block, bi) => {
@@ -557,7 +502,6 @@ const AlgorithmLab = (() => {
         container.innerHTML = html;
     }
 
-    // ── Pseudocode ──
     function updatePseudocode(algo) {
         if (!algo.pseudocode) {
             dom.pseudocodeContent.innerHTML = '<span class="line"><span class="comment">// No pseudocode available</span></span>';
@@ -566,7 +510,6 @@ const AlgorithmLab = (() => {
         const lines = algo.pseudocode.split('\n');
         dom.pseudocodeContent.innerHTML = lines.map(line => {
             let escaped = line.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-            // Syntax highlight keywords
             escaped = escaped.replace(/\b(function|if|else|for|while|return|then|do|end|to|downto|let|and|or|not)\b/g, '<span class="keyword">$1</span>');
             escaped = escaped.replace(/\b(MERGE-SORT|MERGE|PARTITION|QUICKSORT|STRASSEN|FIND-MIN-MAX|MAX-CROSSING|MAX-SUBARRAY|CLOSEST-PAIR|CONVEX-HULL|MATRIX-MULTIPLY)\b/g, '<span class="fn-name">$1</span>');
             return `<span class="line">${escaped}</span>`;
@@ -580,7 +523,6 @@ const AlgorithmLab = (() => {
         });
     }
 
-    // ── Comparison Table ──
     function buildComparisonTable() {
         let html = '';
         Object.values(algorithms).forEach(algo => {
@@ -603,22 +545,9 @@ const AlgorithmLab = (() => {
         });
     }
 
-    // ── Custom Input Modal ──
     function openCustomInputModal() {
         if (!currentAlgo) return;
         dom.modalTitle.textContent = `Custom Input — ${currentAlgo.name}`;
-
-        // Set appropriate hint based on algorithm category
-        if (currentAlgo.category === 'Matrix') {
-            dom.modalHint.textContent = 'Enter 4×4 matrix values row by row (comma-separated, rows on new lines):';
-            dom.modalInput.placeholder = '1, 2, 3, 4\n5, 6, 7, 8\n9, 10, 11, 12\n13, 14, 15, 16';
-        } else if (currentAlgo.category === 'Geometry') {
-            dom.modalHint.textContent = 'Enter points as x,y pairs (one point per line):';
-            dom.modalInput.placeholder = '10, 20\n30, 50\n45, 15\n60, 80\n25, 35';
-        } else {
-            dom.modalHint.textContent = 'Enter comma-separated numbers:';
-            dom.modalInput.placeholder = 'e.g. 38, 27, 43, 3, 9, 82, 10';
-        }
         dom.modalInput.value = '';
         dom.customInputModal.style.display = 'flex';
         dom.modalInput.focus();
@@ -631,52 +560,44 @@ const AlgorithmLab = (() => {
     function applyCustomInput() {
         const raw = dom.modalInput.value.trim();
         if (!raw) return;
-
         let input;
         try {
-            if (currentAlgo.category === 'Geometry') {
-                // Parse points: x,y per line
-                input = raw.split('\n').map(line => {
-                    const [x, y] = line.split(',').map(Number);
-                    return { x, y };
-                }).filter(p => !isNaN(p.x) && !isNaN(p.y));
-            } else if (currentAlgo.category === 'Matrix') {
-                // Parse matrix rows
-                const rows = raw.split('\n').map(line => line.split(',').map(s => parseInt(s.trim(), 10)));
-                input = { A: rows, B: rows }; // Use same for both matrices if only one provided
-            } else {
-                // Parse array
-                input = raw.split(',').map(s => parseInt(s.trim(), 10)).filter(n => !isNaN(n));
-            }
+            input = raw.split(',').map(s => parseInt(s.trim(), 10)).filter(n => !isNaN(n));
         } catch (e) {
-            alert('Invalid input format. Please check and try again.');
+            alert('Invalid format.');
             return;
         }
-
         closeModal();
         resetVisualization();
         generateAndRun(input);
     }
 
-    // ── Init ──
-
     function init() {
         cacheDom();
 
-        // Nav clicks
         dom.sidebarNav.addEventListener('click', e => {
             const btn = e.target.closest('.nav-item');
             if (btn) switchTo(btn.dataset.algo);
         });
 
-        // Home algo cards
         document.querySelectorAll('.algo-card').forEach(card => {
-            card.addEventListener('click', () => {
+            card.addEventListener('click', (e) => {
+                if (e.target.classList.contains('info-btn')) return;
                 switchTo(card.dataset.algo);
             });
         });
 
-        // Controls
+        document.querySelectorAll('.info-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                switchTo(btn.dataset.algo);
+                if (dom.pseudocodeBody) {
+                    dom.pseudocodeBody.classList.remove('collapsed');
+                    if (dom.toggleImplementation) dom.toggleImplementation.classList.remove('collapsed');
+                }
+            });
+        });
+
         dom.btnPlay.addEventListener('click', togglePlay);
         dom.btnStep.addEventListener('click', () => { stop(); stepForward(); });
         dom.btnStepBack.addEventListener('click', () => { stop(); stepBack(); });
@@ -684,94 +605,48 @@ const AlgorithmLab = (() => {
         dom.btnNewInput.addEventListener('click', () => { resetVisualization(); generateAndRun(); });
         dom.speedSlider.addEventListener('input', updateSpeed);
         dom.btnSound.addEventListener('click', toggleSound);
-
-        // Custom input
         dom.btnCustomInput.addEventListener('click', openCustomInputModal);
         dom.modalClose.addEventListener('click', closeModal);
         dom.modalCancel.addEventListener('click', closeModal);
         dom.modalApply.addEventListener('click', applyCustomInput);
-        dom.customInputModal.addEventListener('click', e => {
-            if (e.target === dom.customInputModal) closeModal();
-        });
 
-        // Compare Mode
         dom.btnCompareMode.addEventListener('click', () => {
             compareMode = !compareMode;
             dom.btnCompareMode.classList.toggle('active', compareMode);
             resetVisualization();
-            if (isPlaying) stop();
             generateAndRun();
         });
 
-        // Collapsible panels
-        dom.togglePseudocode.addEventListener('click', () => {
-            dom.pseudocodeBody.classList.toggle('collapsed');
-            dom.togglePseudocode.classList.toggle('collapsed');
-        });
-        dom.toggleLog.addEventListener('click', () => {
-            dom.logBody.classList.toggle('collapsed');
-            dom.toggleLog.classList.toggle('collapsed');
-        });
+        if (dom.toggleDescription) {
+            dom.toggleDescription.addEventListener('click', () => {
+                dom.descriptionBody.classList.toggle('collapsed');
+                dom.toggleDescription.classList.toggle('collapsed');
+            });
+        }
+        if (dom.toggleImplementation) {
+            dom.toggleImplementation.addEventListener('click', () => {
+                dom.pseudocodeBody.classList.toggle('collapsed');
+                dom.toggleImplementation.classList.toggle('collapsed');
+            });
+        }
         dom.toggleComparison.addEventListener('click', () => {
             dom.comparisonBody.classList.toggle('collapsed');
             dom.toggleComparison.classList.toggle('collapsed');
         });
 
-        // Keyboard shortcuts
         document.addEventListener('keydown', e => {
-            // Don't trigger if typing in input/textarea
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-
             switch (e.code) {
-                case 'Space':
-                    e.preventDefault();
-                    togglePlay();
-                    break;
-                case 'ArrowRight':
-                    e.preventDefault();
-                    stop();
-                    stepForward();
-                    break;
-                case 'ArrowLeft':
-                    e.preventDefault();
-                    stop();
-                    stepBack();
-                    break;
-                case 'KeyR':
-                    e.preventDefault();
-                    resetVisualization();
-                    break;
-                case 'KeyN':
-                    e.preventDefault();
-                    resetVisualization();
-                    generateAndRun();
-                    break;
+                case 'Space': e.preventDefault(); togglePlay(); break;
+                case 'ArrowRight': e.preventDefault(); stop(); stepForward(); break;
+                case 'ArrowLeft': e.preventDefault(); stop(); stepBack(); break;
+                case 'KeyR': e.preventDefault(); resetVisualization(); break;
             }
         });
 
-        // Menu toggle
         dom.menuToggle.addEventListener('click', () => dom.sidebar.classList.toggle('open'));
-
-        // Close sidebar on outside click (mobile)
-        document.addEventListener('click', e => {
-            if (window.innerWidth <= 900 && dom.sidebar.classList.contains('open')) {
-                if (!dom.sidebar.contains(e.target) && e.target !== dom.menuToggle) {
-                    dom.sidebar.classList.remove('open');
-                }
-            }
-        });
-
-        // Resize canvas
-        window.addEventListener('resize', () => {
-            if (currentAlgo && currentAlgo.usesCanvas && dom.vizCanvas.style.display !== 'none') {
-                resizeCanvas();
-                if (stepIndex >= 0) renderStep();
-            }
-        });
-
         updateSpeed();
 
-        // Auto-select first algorithm once all scripts are loaded
         setTimeout(() => {
             buildComparisonTable();
             switchTo('home');
